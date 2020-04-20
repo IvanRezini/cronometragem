@@ -1,0 +1,120 @@
+package rezini.crono.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import rezini.crono.model.Operacao;
+
+/**
+ *
+ * @author ivan rezini
+ */
+public class OperacaoDao extends ConnectionFactory {
+
+    private Connection con;
+
+    public OperacaoDao() {
+        this.con = this.getConnection();
+    }
+
+    public void inserir(Operacao operacao) throws SQLException {
+
+        String sql = "INSERT INTO operacao (nomeOperacao, descOperacao, createOperacao, codProduto, statusOperacao) VALUES (?, ?, CURRENT_TIMESTAMP(), ?, ?);";
+
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setString(1, operacao.getNomeOperacao());
+            st.setString(2, operacao.getDescOperacao());
+            st.setInt(3, operacao.getCodProduto());
+            st.setInt(4, operacao.getStatusOperacao());
+
+            st.execute();
+            st.close();
+        }
+
+        this.con.close();
+
+    }
+
+    public List<Operacao> listaOperacoes() throws SQLException {
+        String sql = "SELECT operacao.codOperacao, operacao.nomeOperacao, produto.nomeProduto FROM operacao INNER JOIN produto on operacao.codProduto = produto.codProduto;";
+        List<Operacao> operacoes = null;
+
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            ResultSet rs = st.executeQuery();
+
+            operacoes = new ArrayList<Operacao>();
+
+            while (rs.next()) {
+                Operacao op = new Operacao();
+                op.setCodOperacao(rs.getInt("codOperacao"));
+                op.setNomeOperacao(rs.getString("nomeOperacao"));
+                op.setNomeProduto(rs.getString("nomeProduto"));
+               
+                operacoes.add(op);
+            }
+
+            rs.close();
+            st.close();
+
+        }
+
+        this.con.close();
+        return operacoes;
+    }
+    
+     public List<Operacao> listaOperacoesSemElementos() throws SQLException {
+        String sql = "SELECT operacao.codOperacao, operacao.nomeOperacao, produto.nomeProduto "
+                + "FROM operacao INNER JOIN produto on operacao.codProduto = produto.codProduto WHERE statusOperacao = 2 ;";
+        ///parametro dois tras todas as operaçoes que não posuim elementos cadastrados
+        List<Operacao> operacoes = null;
+
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            ResultSet rs = st.executeQuery();
+
+            operacoes = new ArrayList<Operacao>();
+
+            while (rs.next()) {
+                Operacao op = new Operacao();
+                op.setCodOperacao(rs.getInt("codOperacao"));
+                op.setNomeOperacao(rs.getString("nomeOperacao"));
+                op.setNomeProduto(rs.getString("nomeProduto"));
+               
+                operacoes.add(op);
+            }
+
+            rs.close();
+            st.close();
+
+        }
+
+        this.con.close();
+        return operacoes;
+    }
+     
+      public Operacao getOperacoe( int cod) throws SQLException {
+        String sql = "SELECT * FROM rezinicrono.operacao WHERE codOperacao = ?;";
+       Operacao operacao = null;
+
+         try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setInt(1, cod);
+
+            try ( ResultSet rs = st.executeQuery()) {
+
+                if (rs.next()) {
+                    operacao = new Operacao();
+                    operacao.setCodOperacao(rs.getInt("codOperacao"));
+                    operacao.setNomeOperacao(rs.getString("nomeOperacao"));
+                    operacao.setDescOperacao(rs.getString("descOperacao"));
+                    operacao.setCreateOperacao(rs.getString("createOperacao"));
+                }
+            }
+            st.close();
+        }
+        this.con.close();
+        return operacao;
+    }
+
+}

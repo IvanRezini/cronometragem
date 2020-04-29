@@ -163,7 +163,7 @@ public class PanelCadastroOperacao extends javax.swing.JPanel {
             produto = produto.replaceAll("[^0-9]", "");
             int cod = Integer.parseInt(produto);
             op.setCodProduto(cod);
-            op.setStatusOperacao(1); //criaçãode operacao nova prametro um indica que não possui elementos cadastrados
+            op.setStatusOperacao(1); //criaçãode operacao nova prametro "1" indica que não possui elementos cadastrados
             OperacaoDao opDao = new OperacaoDao();
             
             try {

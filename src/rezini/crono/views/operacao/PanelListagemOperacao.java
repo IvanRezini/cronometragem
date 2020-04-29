@@ -57,8 +57,8 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
         for (int i = 0; i < listaProdutos.size(); i++) {
             Operacao p = listaProdutos.get(i);
-            lista.add(new Object[]{p.getCodOperacao(), p.getNomeOperacao(), p.getNomeProduto()});
-        }
+            lista.add(new Object[]{p.getCodOperacao(), p.getNomeOperacao(), p.getNomeProduto(), p.getDescOperacao()});
+              }
         for (int idx = 0; idx < lista.size(); idx++) {
             model.addRow((Object[]) lista.get(idx));
         }
@@ -140,7 +140,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Codigo", "Nome", "Produto"
+                "Codigo", "Nome", "Produto", "Descrição"
             }
         ));
         jTableListaOperacao.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -149,11 +149,6 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(jTableListaOperacao);
-        if (jTableListaOperacao.getColumnModel().getColumnCount() > 0) {
-            jTableListaOperacao.getColumnModel().getColumn(0).setHeaderValue("Codigo");
-            jTableListaOperacao.getColumnModel().getColumn(1).setHeaderValue("Nome");
-            jTableListaOperacao.getColumnModel().getColumn(2).setHeaderValue("Produto");
-        }
 
         javax.swing.GroupLayout jPanelListaOperacaoLayout = new javax.swing.GroupLayout(jPanelListaOperacao);
         jPanelListaOperacao.setLayout(jPanelListaOperacaoLayout);
@@ -276,6 +271,11 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
         jButtonCancelar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jButtonCancelar.setText("Cancelar");
         jButtonCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCancelarMouseClicked(evt);
+            }
+        });
 
         jButtonSalvar.setBackground(new java.awt.Color(0, 255, 51));
         jButtonSalvar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -361,11 +361,25 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
         add(jPanelEditarOperacao, "card4");
     }// </editor-fold>//GEN-END:initComponents
+    private void popularPainelEdicao(String codigo) throws SQLException {
+        int cod = Integer.parseInt(codigo);
+        OperacaoDao ope = new OperacaoDao();
+        Operacao op = null;
+        op = ope.getOperacoe(cod);
+        jLabelInsertProdutoPanelEdicao.setText(op.getNomeProduto());
+        jLabelInsertCodigo.setText(codigo);
+        jTextOperacao.setText(op.getNomeOperacao());
+        jTextDescricao.setText(op.getDescOperacao());
+          this.add(jPanelEditarOperacao, "editar");
+        this.cl.show(this, "editar");
+    }
+
 
     private void jTableListaOperacaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaOperacaoMouseClicked
+        //prametro 4 lista elementos da operacao clicada
         if (this.acao == 4) {
             int linha = jTableListaOperacao.getSelectedRow();
-            String produto = jTableListaOperacao.getValueAt(linha, 0).toString();
+            String produto = jTableListaOperacao.getValueAt(linha, 2).toString();
             String codigo = jTableListaOperacao.getValueAt(linha, 0).toString();
             int cod = Integer.parseInt(codigo);
             try {
@@ -373,11 +387,19 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
             } catch (SQLException ex) {
                 Logger.getLogger(PanelListagemOperacao.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        } //parametro 2 lista e permite cadastro elementos
         else if (this.acao == 2) {
-            
-        }
 
+        } //parametro 3 lista permite edicao das operaçoes 
+        else if (this.acao == 3) {
+            try {
+                int linha = jTableListaOperacao.getSelectedRow();
+                String codigo = jTableListaOperacao.getValueAt(linha, 0).toString();
+                this.popularPainelEdicao(codigo);
+            } catch (SQLException ex) {
+                Logger.getLogger(PanelListagemOperacao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_jTableListaOperacaoMouseClicked
 
     private void jButtonSalvarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSalvarMouseClicked
@@ -385,23 +407,34 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
             Operacao op = new Operacao();
             op.setNomeOperacao(jTextOperacao.getText());
             op.setDescOperacao(jTextDescricao.getText());
-            op.setStatusOperacao(1); //criaçãode operacao nova prametro um indica que não possui elementos cadastrados
+            op.setCodOperacao(Integer.parseInt(jLabelInsertCodigo.getText())); 
             OperacaoDao opDao = new OperacaoDao();
 
             try {
-               opDao.inserir(op);
-                JOptionPane.showMessageDialog(null, "Cadastro de produto salvo com susesso");
+                opDao.alterar(op);
+                JOptionPane.showMessageDialog(null, "Cadastro alterado com susesso");
                 limparCampos();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Falha no cadastro ");
+                JOptionPane.showMessageDialog(null, "Falha");
             }
         }
     }
+
     private void limparCampos() {
-        jTextOperacao.setText(null);
-        jTextDescricao.setText(null);
+        try {
+            jTextOperacao.setText(null);
+            jTextDescricao.setText(null);
+            this.acao = 1;
+            this.limparTabela();
+            this.popularTabela();
+            this.add(jPanelListaOperacao, "list");
+            this.cl.show(this, "list");
+        } catch (SQLException ex) {
+            Logger.getLogger(PanelListagemOperacao.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-  private boolean validarCampos() {
+
+    private boolean validarCampos() {
         String nome = jTextOperacao.getText();
         if (nome.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Informe uma operaçao");
@@ -414,8 +447,12 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
         } else {
             return true;
         }
-    
+
     }//GEN-LAST:event_jButtonSalvarMouseClicked
+
+    private void jButtonCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCancelarMouseClicked
+        this.limparCampos();
+    }//GEN-LAST:event_jButtonCancelarMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

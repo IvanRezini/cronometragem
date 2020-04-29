@@ -28,27 +28,27 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabelTitulo = new javax.swing.JLabel();
-        jMenuOperacao = new javax.swing.JComboBox<>();
-        jLabelSelecionarOperacao = new javax.swing.JLabel();
+        jLabelOperacao = new javax.swing.JLabel();
         jButtonSalvar = new javax.swing.JToggleButton();
         jButtonCancelar = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableCadastroElementos = new javax.swing.JTable();
         jButtonMaisElemento = new java.awt.Button();
+        jLabelInsertOperacao = new javax.swing.JLabel();
+        jLabelDesc = new javax.swing.JLabel();
+        jLabelInsertDesc = new javax.swing.JLabel();
+        insertTotalDePecas = new javax.swing.JTextField();
+        insertRepeticao = new javax.swing.JTextField();
+        insertInterferencia = new javax.swing.JTextField();
+        insertRitmo = new javax.swing.JTextField();
+        insertNome = new javax.swing.JTextField();
 
         jLabelTitulo.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabelTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelTitulo.setText("Cadastro de Elementos de uma operação");
 
-        jMenuOperacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jMenuOperacao.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuOperacaoActionPerformed(evt);
-            }
-        });
-
-        jLabelSelecionarOperacao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelSelecionarOperacao.setText("Selecione uma operacao:");
+        jLabelOperacao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelOperacao.setText("Operação:");
 
         jButtonSalvar.setBackground(new java.awt.Color(0, 204, 0));
         jButtonSalvar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -63,49 +63,85 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
         jButtonCancelar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jButtonCancelar.setText("Cancelar");
 
+        jTableCadastroElementos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableCadastroElementos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Nome", "Ritimo", "Interferencia", "Repetição", "Total de Peças"
+                "Nome", "Ritmo", "Interferencia", "Repetição", "Total de Peças"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         jScrollPane1.setViewportView(jTableCadastroElementos);
 
         jButtonMaisElemento.setBackground(new java.awt.Color(51, 51, 255));
         jButtonMaisElemento.setLabel("+ Elemento");
 
+        jLabelInsertOperacao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertOperacao.setText("xxxxx");
+
+        jLabelDesc.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelDesc.setText("Descriçao:");
+
+        jLabelInsertDesc.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertDesc.setText("xxxxx");
+
+        insertTotalDePecas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                insertTotalDePecasActionPerformed(evt);
+            }
+        });
+
+        insertRepeticao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                insertRepeticaoActionPerformed(evt);
+            }
+        });
+
+        insertRitmo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                insertRitmoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonCancelar)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonSalvar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelSelecionarOperacao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jMenuOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addComponent(jScrollPane1)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButtonMaisElemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabelOperacao)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabelInsertOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabelDesc)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabelInsertDesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButtonMaisElemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButtonCancelar)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButtonSalvar)))
+                                .addGap(8, 8, 8))))
+                    .addComponent(jLabelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE))
+                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(insertNome)
+                .addGap(0, 0, 0)
+                .addComponent(insertRitmo)
+                .addGap(0, 0, 0)
+                .addComponent(insertInterferencia)
+                .addGap(0, 0, 0)
+                .addComponent(insertRepeticao)
+                .addGap(0, 0, 0)
+                .addComponent(insertTotalDePecas))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,36 +150,60 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
                 .addComponent(jLabelTitulo)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jMenuOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelSelecionarOperacao))
+                    .addComponent(jLabelOperacao)
+                    .addComponent(jLabelInsertOperacao)
+                    .addComponent(jLabelDesc)
+                    .addComponent(jLabelInsertDesc))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(insertTotalDePecas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(insertRepeticao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(insertInterferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(insertRitmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(insertNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
                 .addComponent(jButtonMaisElemento, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSalvar)
-                    .addComponent(jButtonCancelar))
-                .addGap(8, 8, 8))
+                    .addComponent(jButtonCancelar)
+                    .addComponent(jButtonSalvar))
+                .addGap(10, 10, 10))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jMenuOperacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuOperacaoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuOperacaoActionPerformed
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
+    private void insertRepeticaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertRepeticaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_insertRepeticaoActionPerformed
+
+    private void insertTotalDePecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertTotalDePecasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_insertTotalDePecasActionPerformed
+
+    private void insertRitmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertRitmoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_insertRitmoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField insertInterferencia;
+    private javax.swing.JTextField insertNome;
+    private javax.swing.JTextField insertRepeticao;
+    private javax.swing.JTextField insertRitmo;
+    private javax.swing.JTextField insertTotalDePecas;
     private javax.swing.JToggleButton jButtonCancelar;
     private java.awt.Button jButtonMaisElemento;
     private javax.swing.JToggleButton jButtonSalvar;
-    private javax.swing.JLabel jLabelSelecionarOperacao;
+    private javax.swing.JLabel jLabelDesc;
+    private javax.swing.JLabel jLabelInsertDesc;
+    private javax.swing.JLabel jLabelInsertOperacao;
+    private javax.swing.JLabel jLabelOperacao;
     private javax.swing.JLabel jLabelTitulo;
-    private javax.swing.JComboBox<String> jMenuOperacao;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableCadastroElementos;
     // End of variables declaration//GEN-END:variables

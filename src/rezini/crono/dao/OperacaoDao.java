@@ -142,4 +142,18 @@ public class OperacaoDao extends ConnectionFactory {
 
     }
 
+    public void alterarStatus(int cod) throws SQLException {
+        
+        String sql = "UPDATE operacao SET statusOperacao = '0' WHERE (codOperacao = ?);";
+//Parametro "0" indica que a operçao tem elementos cadastrados
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setInt(1, cod);
+            st.execute();
+            st.close();
+        }
+
+        this.con.close();
+
+    }
+
 }

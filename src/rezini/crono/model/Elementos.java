@@ -12,7 +12,7 @@ package rezini.crono.model;
 public class Elementos {
     private String nomeElemento;
     private float ritmoElemento;
-    private float interverenciaElemento;
+    private float interferenciaElemento;
     private int repeticaoElemento;
     private int totalDePecas;
     private int codOperacao;
@@ -33,12 +33,12 @@ public class Elementos {
         this.ritmoElemento = ritmoElemento;
     }
 
-    public float getInterverenciaElemento() {
-        return interverenciaElemento;
+    public float getInterferenciaElemento() {
+        return interferenciaElemento;
     }
 
-    public void setInterverenciaElemento(float interverenciaElemento) {
-        this.interverenciaElemento = interverenciaElemento;
+    public void setInterferenciaElemento(float interverenciaElemento) {
+        this.interferenciaElemento = interverenciaElemento;
     }
 
     public int getRepeticaoElemento() {

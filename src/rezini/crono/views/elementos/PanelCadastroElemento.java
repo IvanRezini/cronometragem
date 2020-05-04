@@ -5,17 +5,80 @@
  */
 package rezini.crono.views.elementos;
 
+import java.awt.CardLayout;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import rezini.crono.dao.ElementosDao;
+import rezini.crono.dao.OperacaoDao;
+import rezini.crono.model.Elementos;
+import rezini.crono.model.Operacao;
+
 /**
  *
  * @author ivan rezini
  */
 public class PanelCadastroElemento extends javax.swing.JPanel {
 
+    private final CardLayout cl;
+
+    public List<Object> listaElementos = new ArrayList<>();
+
     /**
      * Creates new form NewJPanel
+     *
+     * @throws java.sql.SQLException
      */
-    public PanelCadastroElemento() {
+    public PanelCadastroElemento() throws SQLException {
         initComponents();
+        this.cl = (CardLayout) this.getLayout();
+        this.popularTabela();
+    }
+
+    private void limparTabela() {
+        ((DefaultTableModel) jTableCadastroElementos.getModel()).setNumRows(0);
+        jTableCadastroElementos.updateUI();
+         ((DefaultTableModel) jTableListaOperacao.getModel()).setNumRows(0);
+        jTableListaOperacao.updateUI();
+
+    }
+
+    private void popularTabela() throws SQLException {
+
+        OperacaoDao ope = new OperacaoDao();
+        List<Operacao> listaProdutos;
+
+        listaProdutos = ope.listaOperacoesSemElementos();
+
+        DefaultTableModel model = (DefaultTableModel) jTableListaOperacao.getModel();
+        List<Object> lista = new ArrayList<>();
+
+        for (int i = 0; i < listaProdutos.size(); i++) {
+            Operacao p = listaProdutos.get(i);
+            lista.add(new Object[]{p.getCodOperacao(), p.getNomeOperacao(), p.getNomeProduto(), p.getDescOperacao()});
+        }
+        for (int idx = 0; idx < lista.size(); idx++) {
+            model.addRow((Object[]) lista.get(idx));
+        }
+    }
+
+    private void popularTabelaElemento() {
+
+        DefaultTableModel model = (DefaultTableModel) jTableCadastroElementos.getModel();
+        List<Object> lista = new ArrayList<>();
+
+        for (int i = 0; i < this.listaElementos.size(); i++) {
+            Elementos e = (Elementos) this.listaElementos.get(i);
+            lista.add(new Object[]{e.getNomeElemento(), e.getRitmoElemento(), e.getInterferenciaElemento(), e.getRepeticaoElemento(), e.getTotalDePecas()});
+        }
+        for (int idx = 0; idx < lista.size(); idx++) {
+            model.addRow((Object[]) lista.get(idx));
+        }
     }
 
     /**
@@ -27,184 +90,497 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanelListaOperacao = new javax.swing.JPanel();
         jLabelTitulo = new javax.swing.JLabel();
-        jLabelOperacao = new javax.swing.JLabel();
-        jButtonSalvar = new javax.swing.JToggleButton();
-        jButtonCancelar = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableCadastroElementos = new javax.swing.JTable();
-        jButtonMaisElemento = new java.awt.Button();
+        jTableListaOperacao = new javax.swing.JTable();
+        jPanelCadastroElementos = new javax.swing.JPanel();
+        jLabelTituloCadastroElemento = new javax.swing.JLabel();
+        jLabelInsertCodigoOperacao = new javax.swing.JLabel();
+        jLabelOperacao = new javax.swing.JLabel();
         jLabelInsertOperacao = new javax.swing.JLabel();
-        jLabelDesc = new javax.swing.JLabel();
-        jLabelInsertDesc = new javax.swing.JLabel();
-        insertTotalDePecas = new javax.swing.JTextField();
-        insertRepeticao = new javax.swing.JTextField();
-        insertInterferencia = new javax.swing.JTextField();
-        insertRitmo = new javax.swing.JTextField();
-        insertNome = new javax.swing.JTextField();
+        jLabeldescricao = new javax.swing.JLabel();
+        jLabelInsertDescricao = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableCadastroElementos = new javax.swing.JTable();
+        jTextInsertNome = new javax.swing.JTextField();
+        jButtonMaisElemento = new javax.swing.JButton();
+        jButtonSalvar = new javax.swing.JButton();
+        jButtonCancelar = new javax.swing.JButton();
+        jFormattedTextInsertRitmo = new javax.swing.JFormattedTextField();
+        jFormattedTextInsertRepeticao = new javax.swing.JFormattedTextField();
+        jFormattedTextInsertTotalPecas = new javax.swing.JFormattedTextField();
+        jFormattedTextInsertInterferencia = new javax.swing.JFormattedTextField();
+        jButtonMenosElemento = new javax.swing.JButton();
+
+        setLayout(new java.awt.CardLayout());
 
         jLabelTitulo.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabelTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTitulo.setText("Cadastro de Elementos de uma operação");
+        jLabelTitulo.setText("LISTA DE OPERAÇÕES");
 
-        jLabelOperacao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelOperacao.setText("Operação:");
+        jTableListaOperacao.setBorder(new javax.swing.border.MatteBorder(null));
+        jTableListaOperacao.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        jButtonSalvar.setBackground(new java.awt.Color(0, 204, 0));
-        jButtonSalvar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jButtonSalvar.setText("Salvar");
-        jButtonSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSalvarActionPerformed(evt);
+            },
+            new String [] {
+                "Codigo", "Nome", "Produto", "Descrição"
+            }
+        ));
+        jTableListaOperacao.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableListaOperacaoMouseClicked(evt);
             }
         });
+        jScrollPane1.setViewportView(jTableListaOperacao);
 
-        jButtonCancelar.setBackground(new java.awt.Color(255, 204, 0));
-        jButtonCancelar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jButtonCancelar.setText("Cancelar");
+        javax.swing.GroupLayout jPanelListaOperacaoLayout = new javax.swing.GroupLayout(jPanelListaOperacao);
+        jPanelListaOperacao.setLayout(jPanelListaOperacaoLayout);
+        jPanelListaOperacaoLayout.setHorizontalGroup(
+            jPanelListaOperacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabelTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 722, Short.MAX_VALUE)
+        );
+        jPanelListaOperacaoLayout.setVerticalGroup(
+            jPanelListaOperacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelListaOperacaoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelTitulo)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE))
+        );
 
-        jTableCadastroElementos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        add(jPanelListaOperacao, "card3");
+
+        jPanelCadastroElementos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
+
+        jLabelTituloCadastroElemento.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabelTituloCadastroElemento.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelTituloCadastroElemento.setText("Cadastro de elementos, operação:");
+
+        jLabelInsertCodigoOperacao.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabelInsertCodigoOperacao.setText("xxx");
+
+        jLabelOperacao.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelOperacao.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelOperacao.setText("Operação:");
+
+        jLabelInsertOperacao.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelInsertOperacao.setText("xxxx");
+
+        jLabeldescricao.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabeldescricao.setText("Descrição:");
+
+        jLabelInsertDescricao.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelInsertDescricao.setText("xxxx");
+
+        jTableCadastroElementos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
         jTableCadastroElementos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nome", "Ritmo", "Interferencia", "Repetição", "Total de Peças"
+                "Nome", "Ritmo", "Interferencia", "Repetiçaõ", "Total de peças"
             }
         ));
-        jScrollPane1.setViewportView(jTableCadastroElementos);
+        jTableCadastroElementos.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
+        jTableCadastroElementos.setShowGrid(true);
+        jScrollPane2.setViewportView(jTableCadastroElementos);
+
+        jTextInsertNome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextInsertNomeActionPerformed(evt);
+            }
+        });
 
         jButtonMaisElemento.setBackground(new java.awt.Color(51, 51, 255));
-        jButtonMaisElemento.setLabel("+ Elemento");
-
-        jLabelInsertOperacao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelInsertOperacao.setText("xxxxx");
-
-        jLabelDesc.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelDesc.setText("Descriçao:");
-
-        jLabelInsertDesc.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelInsertDesc.setText("xxxxx");
-
-        insertTotalDePecas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                insertTotalDePecasActionPerformed(evt);
+        jButtonMaisElemento.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButtonMaisElemento.setText("+ Elemento");
+        jButtonMaisElemento.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonMaisElementoMouseClicked(evt);
             }
         });
 
-        insertRepeticao.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                insertRepeticaoActionPerformed(evt);
+        jButtonSalvar.setBackground(new java.awt.Color(0, 255, 0));
+        jButtonSalvar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButtonSalvar.setText("Salvar");
+        jButtonSalvar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonSalvarMouseClicked(evt);
             }
         });
 
-        insertRitmo.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCancelar.setBackground(new java.awt.Color(255, 153, 51));
+        jButtonCancelar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButtonCancelar.setText("Cancelar");
+        jButtonCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCancelarMouseClicked(evt);
+            }
+        });
+        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                insertRitmoActionPerformed(evt);
+                jButtonCancelarActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+        jFormattedTextInsertRitmo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        jFormattedTextInsertRitmo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextInsertRitmoActionPerformed(evt);
+            }
+        });
+
+        jFormattedTextInsertRepeticao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jFormattedTextInsertRepeticao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextInsertRepeticaoActionPerformed(evt);
+            }
+        });
+
+        jFormattedTextInsertTotalPecas.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jFormattedTextInsertTotalPecas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextInsertTotalPecasActionPerformed(evt);
+            }
+        });
+
+        jFormattedTextInsertInterferencia.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        jFormattedTextInsertInterferencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextInsertInterferenciaActionPerformed(evt);
+            }
+        });
+
+        jButtonMenosElemento.setBackground(new java.awt.Color(51, 51, 255));
+        jButtonMenosElemento.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButtonMenosElemento.setText("- Elemento");
+        jButtonMenosElemento.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonMenosElementoMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelCadastroElementosLayout = new javax.swing.GroupLayout(jPanelCadastroElementos);
+        jPanelCadastroElementos.setLayout(jPanelCadastroElementosLayout);
+        jPanelCadastroElementosLayout.setHorizontalGroup(
+            jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCadastroElementosLayout.createSequentialGroup()
+                .addComponent(jLabelTituloCadastroElemento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelInsertCodigoOperacao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanelCadastroElementosLayout.createSequentialGroup()
+                .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCadastroElementosLayout.createSequentialGroup()
+                        .addComponent(jLabelOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelInsertOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabeldescricao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelInsertDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCadastroElementosLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabelOperacao)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelInsertOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(27, 27, 27)
-                                .addComponent(jLabelDesc)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelInsertDesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButtonMaisElemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButtonCancelar)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jButtonSalvar)))
-                                .addGap(8, 8, 8))))
-                    .addComponent(jLabelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE))
+                        .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButtonCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonMaisElemento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButtonMenosElemento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(insertNome)
+            .addGroup(jPanelCadastroElementosLayout.createSequentialGroup()
+                .addComponent(jTextInsertNome)
                 .addGap(0, 0, 0)
-                .addComponent(insertRitmo)
+                .addComponent(jFormattedTextInsertRitmo)
                 .addGap(0, 0, 0)
-                .addComponent(insertInterferencia)
+                .addComponent(jFormattedTextInsertInterferencia)
                 .addGap(0, 0, 0)
-                .addComponent(insertRepeticao)
+                .addComponent(jFormattedTextInsertRepeticao)
                 .addGap(0, 0, 0)
-                .addComponent(insertTotalDePecas))
+                .addComponent(jFormattedTextInsertTotalPecas))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelTitulo)
+        jPanelCadastroElementosLayout.setVerticalGroup(
+            jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCadastroElementosLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelInsertCodigoOperacao)
+                    .addComponent(jLabelTituloCadastroElemento))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelOperacao)
                     .addComponent(jLabelInsertOperacao)
-                    .addComponent(jLabelDesc)
-                    .addComponent(jLabelInsertDesc))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(jLabeldescricao)
+                    .addComponent(jLabelInsertDescricao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(insertTotalDePecas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(insertRepeticao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(insertInterferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(insertRitmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(insertNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addComponent(jButtonMaisElemento, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextInsertNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextInsertRitmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextInsertInterferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextInsertRepeticao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextInsertTotalPecas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonMenosElemento)
+                    .addComponent(jButtonMaisElemento))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonCancelar)
-                    .addComponent(jButtonSalvar))
-                .addGap(10, 10, 10))
+                .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonSalvar)
+                    .addComponent(jButtonCancelar))
+                .addGap(20, 20, 20))
         );
+
+        add(jPanelCadastroElementos, "card3");
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSalvarActionPerformed
+    private void jTableListaOperacaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaOperacaoMouseClicked
 
-    private void insertRepeticaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertRepeticaoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_insertRepeticaoActionPerformed
+        int linha = jTableListaOperacao.getSelectedRow();
+        String operacao = jTableListaOperacao.getValueAt(linha, 1).toString();
+        String descricao = jTableListaOperacao.getValueAt(linha, 3).toString();
+        String codigo = jTableListaOperacao.getValueAt(linha, 0).toString();
+        int cod = Integer.parseInt(codigo);
+        jLabelInsertCodigoOperacao.setText(codigo);
+        jLabelInsertDescricao.setText(descricao);
+        jLabelInsertOperacao.setText(operacao);
 
-    private void insertTotalDePecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertTotalDePecasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_insertTotalDePecasActionPerformed
+        this.add(jPanelCadastroElementos, "cadastro");
+        this.cl.show(this, "cadastro");
+    }//GEN-LAST:event_jTableListaOperacaoMouseClicked
 
-    private void insertRitmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertRitmoActionPerformed
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_insertRitmoActionPerformed
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private boolean validarCampos() {
+        String repeticao = jFormattedTextInsertRepeticao.getText();
+        repeticao = repeticao.replaceAll("[^0-9]", "");
+
+        String totalPecas = jFormattedTextInsertTotalPecas.getText();
+        totalPecas = totalPecas.replaceAll("[^0-9]", "");
+
+        String ritmo = jFormattedTextInsertRitmo.getText();
+        ritmo = ritmo.replaceAll(",", ".");
+        ritmo = ritmo.replaceAll("[^0-9]", "");
+
+        String interferencia = jFormattedTextInsertInterferencia.getText();
+        interferencia = interferencia.replaceAll(",", ".");
+        interferencia = interferencia.replaceAll("[^0-9]", "");
+
+        String nome = jTextInsertNome.getText();
+        if (nome.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe um nome para o Elemento");
+            return false;
+        }
+        if (ritmo.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe o ritmo");
+            return false;
+        }
+        if (interferencia.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe a interferenca");
+            return false;
+        }
+        if (repeticao.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe a repetiçaõ");
+            return false;
+        }
+        if (totalPecas.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe o total de peças");
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    private void limparCampos() {
+        jTextInsertNome.setText("");
+        jFormattedTextInsertRepeticao.setText("");
+        jFormattedTextInsertTotalPecas.setText("");
+        jFormattedTextInsertRitmo.setText("");
+        jFormattedTextInsertInterferencia.setText("");
+    }
+
+    private void jButtonMaisElementoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMaisElementoMouseClicked
+        if (validarCampos()) {
+            int cod = Integer.parseInt(jLabelInsertCodigoOperacao.getText());
+            int repeticao = Integer.parseInt(jFormattedTextInsertRepeticao.getText());
+            int totalPecas = Integer.parseInt(jFormattedTextInsertTotalPecas.getText());
+            String rit = jFormattedTextInsertRitmo.getText();
+            rit = rit.replaceAll(",", ".");
+            float ritmo = Float.parseFloat(rit);
+            String interfe = jFormattedTextInsertInterferencia.getText();
+            interfe = interfe.replaceAll(",", ".");
+            float interferencia = Float.parseFloat(interfe);
+
+            Elementos el = new Elementos();
+            el.setNomeElemento(jTextInsertNome.getText());
+            el.setRitmoElemento(ritmo);
+            el.setRepeticaoElemento(repeticao);
+            el.setInterferenciaElemento(interferencia);
+            el.setTotalDePecas(totalPecas);
+            el.setCodOperacao(cod);
+            this.listaElementos.add(el);
+            this.limparTabela();
+            this.limparCampos();
+            this.popularTabelaElemento();
+
+        }
+    }//GEN-LAST:event_jButtonMaisElementoMouseClicked
+  
+    private void ocultarCampos() {
+        jTextInsertNome.setVisible(false);
+        jFormattedTextInsertRepeticao.setVisible(false);
+        jFormattedTextInsertTotalPecas.setVisible(false);
+        jFormattedTextInsertRitmo.setVisible(false);
+        jFormattedTextInsertInterferencia.setVisible(false);
+    }
+    
+    private void mostrarCampos() {
+        jTextInsertNome.setVisible(true);
+        jFormattedTextInsertRepeticao.setVisible(true);
+        jFormattedTextInsertTotalPecas.setVisible(true);
+        jFormattedTextInsertRitmo.setVisible(true);
+        jFormattedTextInsertInterferencia.setVisible(true);
+    }
+    
+    private void jFormattedTextInsertRitmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertRitmoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextInsertRitmoActionPerformed
+
+    private void jFormattedTextInsertRepeticaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertRepeticaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextInsertRepeticaoActionPerformed
+
+    private void jFormattedTextInsertTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertTotalPecasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextInsertTotalPecasActionPerformed
+
+    private void jFormattedTextInsertInterferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertInterferenciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextInsertInterferenciaActionPerformed
+
+    private void jTextInsertNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextInsertNomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextInsertNomeActionPerformed
+
+    private void jButtonCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCancelarMouseClicked
+        Object[] options = {"Sim", "Não"};
+        int opcaoSelecionada = JOptionPane.showOptionDialog(null, "Deseja cancelar a inserçao de elementos?\n Todo o processo sera cancelado !!", "Atenção!", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+
+        if (opcaoSelecionada == 0) {
+            try {
+                this.limparCampos();
+                this.limparTabela();
+                this.add(jPanelListaOperacao, "lista");
+                this.cl.show(this, "lista");
+                this.popularTabela();
+                this.mostrarCampos();
+            } catch (SQLException ex) {
+                Logger.getLogger(PanelCadastroElemento.class.getName()).log(Level.SEVERE, null, ex);
+            }
+         
+        }
+    }//GEN-LAST:event_jButtonCancelarMouseClicked
+
+    private void jButtonSalvarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSalvarMouseClicked
+        if (validarCampos()) {
+            int cod = Integer.parseInt(jLabelInsertCodigoOperacao.getText());
+            int repeticao = Integer.parseInt(jFormattedTextInsertRepeticao.getText());
+            int totalPecas = Integer.parseInt(jFormattedTextInsertTotalPecas.getText());
+            String rit = jFormattedTextInsertRitmo.getText();
+            rit = rit.replaceAll(",", ".");
+            float ritmo = Float.parseFloat(rit);
+            String interfe = jFormattedTextInsertInterferencia.getText();
+            interfe = interfe.replaceAll(",", ".");
+            float interferencia = Float.parseFloat(interfe);
+            Elementos el = new Elementos();
+            el.setNomeElemento(jTextInsertNome.getText());
+            el.setRitmoElemento(ritmo);
+            el.setRepeticaoElemento(repeticao);
+            el.setInterferenciaElemento(interferencia);
+            el.setTotalDePecas(totalPecas);
+            el.setCodOperacao(cod);
+            this.listaElementos.add(el);
+            this.limparTabela();
+            this.limparCampos();
+            this.popularTabelaElemento();
+            this.ocultarCampos();
+            Object[] options = {"Sim", "Não"};
+            int opcaoSelecionada = JOptionPane.showOptionDialog(null, "Salvar elementos?", "Atenção!",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+            if (opcaoSelecionada == 0) {
+
+                try {
+                    for (int i = 0; i < this.listaElementos.size(); i++) {
+                        try {
+                            Elementos elemento = (Elementos) this.listaElementos.get(i);
+                            ElementosDao ele = new ElementosDao();
+                            ele.inserir(elemento);
+                            this.limparTabela();
+                            
+                        } catch (SQLException ex) {
+                            Logger.getLogger(PanelCadastroElemento.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    OperacaoDao op = new OperacaoDao();
+                    op.alterarStatus(cod);
+                    this.add(jPanelListaOperacao, "lista");
+                    this.cl.show(this, "lista");
+                    this.popularTabela();
+                    this.mostrarCampos();
+                } catch (SQLException ex) {
+                    Logger.getLogger(PanelCadastroElemento.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+    }//GEN-LAST:event_jButtonSalvarMouseClicked
+
+    private void jButtonMenosElementoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMenosElementoMouseClicked
+        int i = this.listaElementos.size() - 1;
+        Elementos e = (Elementos) this.listaElementos.get(i);
+        jTextInsertNome.setText(e.getNomeElemento());
+        jFormattedTextInsertRitmo.setText(e.getRitmoElemento() + "");
+        jFormattedTextInsertRepeticao.setText(e.getRepeticaoElemento() + "");
+        jFormattedTextInsertInterferencia.setText(e.getInterferenciaElemento() + "");
+        jFormattedTextInsertTotalPecas.setText(e.getTotalDePecas() + "");
+        this.listaElementos.remove(i);
+        this.limparTabela();
+        this.popularTabelaElemento();
+
+    }//GEN-LAST:event_jButtonMenosElementoMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField insertInterferencia;
-    private javax.swing.JTextField insertNome;
-    private javax.swing.JTextField insertRepeticao;
-    private javax.swing.JTextField insertRitmo;
-    private javax.swing.JTextField insertTotalDePecas;
-    private javax.swing.JToggleButton jButtonCancelar;
-    private java.awt.Button jButtonMaisElemento;
-    private javax.swing.JToggleButton jButtonSalvar;
-    private javax.swing.JLabel jLabelDesc;
-    private javax.swing.JLabel jLabelInsertDesc;
+    private javax.swing.JButton jButtonCancelar;
+    private javax.swing.JButton jButtonMaisElemento;
+    private javax.swing.JButton jButtonMenosElemento;
+    private javax.swing.JButton jButtonSalvar;
+    private javax.swing.JFormattedTextField jFormattedTextInsertInterferencia;
+    private javax.swing.JFormattedTextField jFormattedTextInsertRepeticao;
+    private javax.swing.JFormattedTextField jFormattedTextInsertRitmo;
+    private javax.swing.JFormattedTextField jFormattedTextInsertTotalPecas;
+    private javax.swing.JLabel jLabelInsertCodigoOperacao;
+    private javax.swing.JLabel jLabelInsertDescricao;
     private javax.swing.JLabel jLabelInsertOperacao;
     private javax.swing.JLabel jLabelOperacao;
     private javax.swing.JLabel jLabelTitulo;
+    private javax.swing.JLabel jLabelTituloCadastroElemento;
+    private javax.swing.JLabel jLabeldescricao;
+    private javax.swing.JPanel jPanelCadastroElementos;
+    private javax.swing.JPanel jPanelListaOperacao;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableCadastroElementos;
+    private javax.swing.JTable jTableListaOperacao;
+    private javax.swing.JTextField jTextInsertNome;
     // End of variables declaration//GEN-END:variables
 }

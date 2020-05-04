@@ -400,11 +400,15 @@ public class cronoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuOperacaoListarActionPerformed
 
     private void jMenuElementoCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuElementoCadastroActionPerformed
-        PanelCadastroElemento cadastroElemento = new PanelCadastroElemento();
-        jPanelPrincipal.add(cadastroElemento, "cadastroElemento");
-        this.cl.show(jPanelPrincipal, "cadastroElemento");
-
-        // TODO add your handling code here:
+        try {
+            PanelCadastroElemento cadastroElemento = new PanelCadastroElemento();
+            jPanelPrincipal.add(cadastroElemento, "cadastroElemento");
+            this.cl.show(jPanelPrincipal, "cadastroElemento");
+            
+            // TODO add your handling code here:
+        } catch (SQLException ex) {
+            Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuElementoCadastroActionPerformed
 
     private void jMenuUsuarioExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuUsuarioExcluirActionPerformed

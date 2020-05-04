@@ -84,7 +84,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
         for (int i = 0; i < listaElementos.size(); i++) {
             Elementos p = listaElementos.get(i);
-            lista.add(new Object[]{p.getNomeElemento(), p.getRitmoElemento(), p.getInterverenciaElemento(), p.getRepeticaoElemento(), p.getTotalDePecas()});
+            lista.add(new Object[]{p.getNomeElemento(), p.getRitmoElemento(), p.getInterferenciaElemento(), p.getRepeticaoElemento(), p.getTotalDePecas()});
         }
         for (int idx = 0; idx < lista.size(); idx++) {
             model.addRow((Object[]) lista.get(idx));
@@ -155,7 +155,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
         jPanelListaOperacaoLayout.setHorizontalGroup(
             jPanelListaOperacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabelTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
         );
         jPanelListaOperacaoLayout.setVerticalGroup(
             jPanelListaOperacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,7 +208,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
             jPanelElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabelOperacao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabelElementos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
             .addGroup(jPanelElementosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelDescricao)
@@ -323,7 +323,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
                             .addGroup(jPanelEditarOperacaoLayout.createSequentialGroup()
                                 .addGap(8, 8, 8)
                                 .addComponent(jLabelInsertCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(178, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEditarOperacaoLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonCancelar)

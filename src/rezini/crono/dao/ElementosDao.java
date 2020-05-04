@@ -32,7 +32,7 @@ public class ElementosDao extends ConnectionFactory {
         try ( PreparedStatement st = this.con.prepareStatement(sql)) {
            st.setString(1, elemento.getNomeElemento());
             st.setFloat(2, elemento.getRitmoElemento());
-            st.setFloat(3, elemento.getInterverenciaElemento());
+            st.setFloat(3, elemento.getInterferenciaElemento());
             st.setInt(4, elemento.getRepeticaoElemento());
             st.setInt(5, elemento.getTotalDePecas());
             st.setInt(6, elemento.getCodOperacao());
@@ -60,7 +60,7 @@ public List<Elementos> listarElementos(int codProduto) throws SQLException {
                 el.setNomeElemento(rs.getString("nomeElemento"));
                 el.setRitmoElemento(rs.getFloat("ritmoElemento"));
                 el.setCodOperacao(rs.getInt("codOperacao"));
-                el.setInterverenciaElemento(rs.getFloat("interferenciaElemento"));
+                el.setInterferenciaElemento(rs.getFloat("interferenciaElemento"));
                 el.setRepeticaoElemento(rs.getInt("repeticaoElemento"));
                 el.setTotalDePecas(rs.getInt("totalDePecas"));
 

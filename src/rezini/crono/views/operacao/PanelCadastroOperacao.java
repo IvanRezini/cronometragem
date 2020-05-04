@@ -22,6 +22,7 @@ public class PanelCadastroOperacao extends javax.swing.JPanel {
 
     /**
      * Creates new form PanelCadastroOperacao
+     *
      * @throws java.sql.SQLException
      */
     public PanelCadastroOperacao() throws SQLException {
@@ -165,10 +166,8 @@ public class PanelCadastroOperacao extends javax.swing.JPanel {
             op.setCodProduto(cod);
             op.setStatusOperacao(1); //criaçãode operacao nova prametro "1" indica que não possui elementos cadastrados
             OperacaoDao opDao = new OperacaoDao();
-            
+
             try {
-                System.out.println("\n"+cod+"\n");
-            
                 opDao.inserir(op);
                 JOptionPane.showMessageDialog(null, "Cadastro de produto salvo com susesso");
                 limparCampos();

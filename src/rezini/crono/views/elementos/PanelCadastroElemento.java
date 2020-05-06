@@ -43,7 +43,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     private void limparTabela() {
         ((DefaultTableModel) jTableCadastroElementos.getModel()).setNumRows(0);
         jTableCadastroElementos.updateUI();
-         ((DefaultTableModel) jTableListaOperacao.getModel()).setNumRows(0);
+        ((DefaultTableModel) jTableListaOperacao.getModel()).setNumRows(0);
         jTableListaOperacao.updateUI();
 
     }
@@ -117,7 +117,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
         jLabelTitulo.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabelTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTitulo.setText("LISTA DE OPERAÇÕES");
+        jLabelTitulo.setText("LISTA DE OPERAÇÕES PARA CADASTRO DE ELEMENTOS");
 
         jTableListaOperacao.setBorder(new javax.swing.border.MatteBorder(null));
         jTableListaOperacao.setModel(new javax.swing.table.DefaultTableModel(
@@ -434,7 +434,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
         }
     }//GEN-LAST:event_jButtonMaisElementoMouseClicked
-  
+
     private void ocultarCampos() {
         jTextInsertNome.setVisible(false);
         jFormattedTextInsertRepeticao.setVisible(false);
@@ -442,7 +442,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
         jFormattedTextInsertRitmo.setVisible(false);
         jFormattedTextInsertInterferencia.setVisible(false);
     }
-    
+
     private void mostrarCampos() {
         jTextInsertNome.setVisible(true);
         jFormattedTextInsertRepeticao.setVisible(true);
@@ -450,7 +450,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
         jFormattedTextInsertRitmo.setVisible(true);
         jFormattedTextInsertInterferencia.setVisible(true);
     }
-    
+
     private void jFormattedTextInsertRitmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertRitmoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jFormattedTextInsertRitmoActionPerformed
@@ -486,7 +486,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
             } catch (SQLException ex) {
                 Logger.getLogger(PanelCadastroElemento.class.getName()).log(Level.SEVERE, null, ex);
             }
-         
+
         }
     }//GEN-LAST:event_jButtonCancelarMouseClicked
 
@@ -525,7 +525,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
                             ElementosDao ele = new ElementosDao();
                             ele.inserir(elemento);
                             this.limparTabela();
-                            
+
                         } catch (SQLException ex) {
                             Logger.getLogger(PanelCadastroElemento.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -541,7 +541,6 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
                 }
             }
         }
-
     }//GEN-LAST:event_jButtonSalvarMouseClicked
 
     private void jButtonMenosElementoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMenosElementoMouseClicked

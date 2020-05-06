@@ -7,16 +7,19 @@ package rezini.crono;
 
 import java.awt.CardLayout;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import rezini.crono.model.Usuario;
 import rezini.crono.views.elementos.PanelCadastroElemento;
 import rezini.crono.views.elementos.PanelListaDeElemento;
 import rezini.crono.views.operacao.PanelCadastroOperacao;
 import rezini.crono.views.operacao.PanelListagemOperacao;
-import rezini.crono.views.padrao.PanelPadrao;
 import rezini.crono.views.produto.PanelCadastroProduto;
 import rezini.crono.views.usuario.PanelCadastroUsuario;
 import rezini.crono.views.produto.PanelListarProdutos;
+import rezini.crono.views.tomadatempo.PanelTomadaDeTempo;
 import rezini.crono.views.usuario.PanelListaDeUsuarios;
 
 /**
@@ -24,8 +27,10 @@ import rezini.crono.views.usuario.PanelListaDeUsuarios;
  * @author ivan rezini
  */
 public class cronoFrame extends javax.swing.JFrame {
-
+    
     private CardLayout cl;
+    
+    public List<Object> usu = new ArrayList<>();
 
     /**
      * Creates new form cronoFrame
@@ -33,12 +38,21 @@ public class cronoFrame extends javax.swing.JFrame {
     public cronoFrame() {
         initComponents();
         this.cl = (CardLayout) jPanelPrincipal.getLayout();
+        jPanelPrincipal.add(jPanelPadrao, "padrao");
+        this.cl.show(jPanelPrincipal, "padrao");
     }
+    
+  
+        
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanelPrincipal = new javax.swing.JPanel();
+        jPanelPadrao = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButtonLogin = new javax.swing.JButton();
         jPanelLogin = new javax.swing.JPanel();
         jLabelTitulo = new javax.swing.JLabel();
         jLabelnome = new javax.swing.JLabel();
@@ -49,7 +63,7 @@ public class cronoFrame extends javax.swing.JFrame {
         cpSenha = new javax.swing.JPasswordField();
         baraMenuSuperior = new javax.swing.JMenuBar();
         jMenuInicio = new javax.swing.JMenu();
-        jMenu1 = new javax.swing.JMenu();
+        jMenuUsuario = new javax.swing.JMenu();
         jMenuUsuarioCadastro = new javax.swing.JMenuItem();
         jMenuUsuarioListar = new javax.swing.JMenuItem();
         jMenuUsuarioEditar = new javax.swing.JMenuItem();
@@ -64,15 +78,51 @@ public class cronoFrame extends javax.swing.JFrame {
         jMenuOperacaoEditar = new javax.swing.JMenuItem();
         jMenuElemento = new javax.swing.JMenu();
         jMenuElementoCadastro = new javax.swing.JMenuItem();
+        jMenuElementoListar = new javax.swing.JMenuItem();
         jMenuRelatorio = new javax.swing.JMenu();
         jMenuTomadaTempo = new javax.swing.JMenu();
+        jMenuTomadaTempoIniciar = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(750, 500));
 
         jPanelPrincipal.setLayout(new java.awt.CardLayout());
+
+        jPanelPadrao.setBackground(new java.awt.Color(51, 0, 255));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Bem vindo");
+
+        jButtonLogin.setText("Login");
+        jButtonLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonLoginMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelPadraoLayout = new javax.swing.GroupLayout(jPanelPadrao);
+        jPanelPadrao.setLayout(jPanelPadraoLayout);
+        jPanelPadraoLayout.setHorizontalGroup(
+            jPanelPadraoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+            .addGroup(jPanelPadraoLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jButtonLogin)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelPadraoLayout.setVerticalGroup(
+            jPanelPadraoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPadraoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButtonLogin)
+                .addGap(144, 144, 144)
+                .addComponent(jLabel1)
+                .addContainerGap(221, Short.MAX_VALUE))
+        );
+
+        jPanelPrincipal.add(jPanelPadrao, "card3");
 
         jPanelLogin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanelLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -87,6 +137,7 @@ public class cronoFrame extends javax.swing.JFrame {
         jLabelnome.setText("Sistema de cronometragem Rezini");
 
         LabelUsuario.setFont(new java.awt.Font("Ultra", 1, 14)); // NOI18N
+        LabelUsuario.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         LabelUsuario.setText("Usuário:");
 
         cpUsuario.addActionListener(new java.awt.event.ActionListener() {
@@ -96,7 +147,8 @@ public class cronoFrame extends javax.swing.JFrame {
         });
 
         LabelSenha.setFont(new java.awt.Font("Ultra", 1, 14)); // NOI18N
-        LabelSenha.setText("Senha:");
+        LabelSenha.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        LabelSenha.setText("Senha:   ");
 
         btnEntrar.setBackground(new java.awt.Color(51, 255, 0));
         btnEntrar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -118,20 +170,19 @@ public class cronoFrame extends javax.swing.JFrame {
         jPanelLoginLayout.setHorizontalGroup(
             jPanelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelLoginLayout.createSequentialGroup()
-                .addGroup(jPanelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelLoginLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(LabelUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(cpUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelLoginLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(LabelSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(cpSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanelLoginLayout.createSequentialGroup()
                         .addGap(400, 400, 400)
-                        .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelLoginLayout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addGroup(jPanelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(LabelSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LabelUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cpUsuario)
+                            .addComponent(cpSenha))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jLabelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabelnome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -152,7 +203,8 @@ public class cronoFrame extends javax.swing.JFrame {
                     .addComponent(LabelSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cpSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(60, 60, 60)
-                .addComponent(btnEntrar))
+                .addComponent(btnEntrar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanelPrincipal.add(jPanelLogin, "card2");
@@ -167,7 +219,7 @@ public class cronoFrame extends javax.swing.JFrame {
         });
         baraMenuSuperior.add(jMenuInicio);
 
-        jMenu1.setText("Usuario");
+        jMenuUsuario.setText("Usuario");
 
         jMenuUsuarioCadastro.setText("Cadastro");
         jMenuUsuarioCadastro.addActionListener(new java.awt.event.ActionListener() {
@@ -175,7 +227,7 @@ public class cronoFrame extends javax.swing.JFrame {
                 jMenuUsuarioCadastroActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuUsuarioCadastro);
+        jMenuUsuario.add(jMenuUsuarioCadastro);
 
         jMenuUsuarioListar.setText("Listar");
         jMenuUsuarioListar.addActionListener(new java.awt.event.ActionListener() {
@@ -183,7 +235,7 @@ public class cronoFrame extends javax.swing.JFrame {
                 jMenuUsuarioListarActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuUsuarioListar);
+        jMenuUsuario.add(jMenuUsuarioListar);
 
         jMenuUsuarioEditar.setText("Editar");
         jMenuUsuarioEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -191,7 +243,7 @@ public class cronoFrame extends javax.swing.JFrame {
                 jMenuUsuarioEditarActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuUsuarioEditar);
+        jMenuUsuario.add(jMenuUsuarioEditar);
 
         jMenuUsuarioExcluir.setText("Excluir");
         jMenuUsuarioExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -199,9 +251,9 @@ public class cronoFrame extends javax.swing.JFrame {
                 jMenuUsuarioExcluirActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuUsuarioExcluir);
+        jMenuUsuario.add(jMenuUsuarioExcluir);
 
-        baraMenuSuperior.add(jMenu1);
+        baraMenuSuperior.add(jMenuUsuario);
 
         jMenuProduto.setText("Produtos");
 
@@ -274,12 +326,29 @@ public class cronoFrame extends javax.swing.JFrame {
         });
         jMenuElemento.add(jMenuElementoCadastro);
 
+        jMenuElementoListar.setText("Listar");
+        jMenuElementoListar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuElementoListarActionPerformed(evt);
+            }
+        });
+        jMenuElemento.add(jMenuElementoListar);
+
         baraMenuSuperior.add(jMenuElemento);
 
         jMenuRelatorio.setText("Relatorios");
         baraMenuSuperior.add(jMenuRelatorio);
 
         jMenuTomadaTempo.setText("Tomada de tempo");
+
+        jMenuTomadaTempoIniciar.setText("Iniciar");
+        jMenuTomadaTempoIniciar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenuTomadaTempoIniciarMouseClicked(evt);
+            }
+        });
+        jMenuTomadaTempo.add(jMenuTomadaTempoIniciar);
+
         baraMenuSuperior.add(jMenuTomadaTempo);
 
         setJMenuBar(baraMenuSuperior);
@@ -288,11 +357,11 @@ public class cronoFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -343,10 +412,9 @@ public class cronoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cpUsuarioActionPerformed
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        PanelPadrao padrao = new PanelPadrao();
-        jPanelPrincipal.add(padrao, "panelPadrao");
-        this.cl.show(jPanelPrincipal, "panelPadrao");
-
+        jPanelPrincipal.add(jPanelPadrao, "padrao");
+        this.cl.show(jPanelPrincipal, "padrao");
+         
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void cpSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpSenhaActionPerformed
@@ -404,7 +472,7 @@ public class cronoFrame extends javax.swing.JFrame {
             PanelCadastroElemento cadastroElemento = new PanelCadastroElemento();
             jPanelPrincipal.add(cadastroElemento, "cadastroElemento");
             this.cl.show(jPanelPrincipal, "cadastroElemento");
-            
+
             // TODO add your handling code here:
         } catch (SQLException ex) {
             Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -418,11 +486,34 @@ public class cronoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuUsuarioExcluirActionPerformed
 
     private void jMenuInicioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuInicioMouseClicked
-        PanelPadrao padrao = new PanelPadrao();
-        jPanelPrincipal.add(padrao, "panelPadrao");
-        this.cl.show(jPanelPrincipal, "panelPadrao");
+        jPanelPrincipal.add(jPanelPadrao, "padrao");
+        this.cl.show(jPanelPrincipal, "padrao");
 
     }//GEN-LAST:event_jMenuInicioMouseClicked
+
+    private void jMenuElementoListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuElementoListarActionPerformed
+        try {
+            PanelListaDeElemento listar = new PanelListaDeElemento();
+            jPanelPrincipal.add(listar, "listaElemento");
+            this.cl.show(jPanelPrincipal, "listaElemento");
+        } catch (SQLException ex) {
+            Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuElementoListarActionPerformed
+
+    private void jButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLoginMouseClicked
+        jPanelPrincipal.add(jPanelLogin, "login");
+        this.cl.show(jPanelPrincipal, "login");
+        jButtonLogin.setVisible(false);
+    }//GEN-LAST:event_jButtonLoginMouseClicked
+
+    private void jMenuTomadaTempoIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuTomadaTempoIniciarMouseClicked
+        PanelTomadaDeTempo tomada = new PanelTomadaDeTempo();
+            jPanelPrincipal.add(tomada, "tomada");
+            this.cl.show(jPanelPrincipal, "tomada");
+        
+        
+    }//GEN-LAST:event_jMenuTomadaTempoIniciarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -455,7 +546,6 @@ public class cronoFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new cronoFrame().setVisible(true);
-                System.out.println("hsnfgnfgnfgnfg \n whtwhrtrww \n wehwh");
             }
         });
     }
@@ -467,11 +557,13 @@ public class cronoFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnEntrar;
     private javax.swing.JPasswordField cpSenha;
     private javax.swing.JTextField cpUsuario;
+    private javax.swing.JButton jButtonLogin;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelTitulo;
     private javax.swing.JLabel jLabelnome;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenuElemento;
     private javax.swing.JMenuItem jMenuElementoCadastro;
+    private javax.swing.JMenuItem jMenuElementoListar;
     private javax.swing.JMenu jMenuInicio;
     private javax.swing.JMenu jMenuOperacao;
     private javax.swing.JMenuItem jMenuOperacaoCadastro;
@@ -483,11 +575,14 @@ public class cronoFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuProdutoListar;
     private javax.swing.JMenu jMenuRelatorio;
     private javax.swing.JMenu jMenuTomadaTempo;
+    private javax.swing.JMenu jMenuTomadaTempoIniciar;
+    private javax.swing.JMenu jMenuUsuario;
     private javax.swing.JMenuItem jMenuUsuarioCadastro;
     private javax.swing.JMenuItem jMenuUsuarioEditar;
     private javax.swing.JMenuItem jMenuUsuarioExcluir;
     private javax.swing.JMenuItem jMenuUsuarioListar;
     private javax.swing.JPanel jPanelLogin;
+    private javax.swing.JPanel jPanelPadrao;
     private javax.swing.JPanel jPanelPrincipal;
     // End of variables declaration//GEN-END:variables
 

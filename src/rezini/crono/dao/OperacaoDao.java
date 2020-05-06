@@ -98,6 +98,36 @@ public class OperacaoDao extends ConnectionFactory {
         this.con.close();
         return operacoes;
     }
+      public List<Operacao> listaOperacoesComElementos() throws SQLException {
+        String sql = "SELECT * FROM operacao INNER JOIN produto on operacao.codProduto = produto.codProduto WHERE statusOperacao = 0 ;";
+        ///parametro "0" tras todas as operaçoes com elementos cadastrados
+        List<Operacao> operacoes = null;
+
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            ResultSet rs = st.executeQuery();
+
+            operacoes = new ArrayList<Operacao>();
+
+            while (rs.next()) {
+                Operacao op = new Operacao();
+                op.setCodOperacao(rs.getInt("codOperacao"));
+                op.setNomeOperacao(rs.getString("nomeOperacao"));
+                op.setDescOperacao(rs.getString("descOperacao"));
+                op.setCreateOperacao(rs.getString("createOperacao"));
+                op.setStatusOperacao(rs.getInt("statusOperacao"));
+                op.setNomeProduto(rs.getString("nomeProduto"));
+
+                operacoes.add(op);
+            }
+
+            rs.close();
+            st.close();
+
+        }
+
+        this.con.close();
+        return operacoes;
+    }
 
     public Operacao getOperacoe(int cod) throws SQLException {
         String sql = "SELECT * FROM operacao "

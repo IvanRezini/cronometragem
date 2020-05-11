@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import rezini.crono.model.Usuario;
 import rezini.crono.views.elementos.PanelCadastroElemento;
 import rezini.crono.views.elementos.PanelListaDeElemento;
 import rezini.crono.views.operacao.PanelCadastroOperacao;
@@ -27,9 +26,10 @@ import rezini.crono.views.usuario.PanelListaDeUsuarios;
  * @author ivan rezini
  */
 public class cronoFrame extends javax.swing.JFrame {
-    
+
+    private int codigoUsuario = 5060;
     private CardLayout cl;
-    
+
     public List<Object> usu = new ArrayList<>();
 
     /**
@@ -41,14 +41,12 @@ public class cronoFrame extends javax.swing.JFrame {
         jPanelPrincipal.add(jPanelPadrao, "padrao");
         this.cl.show(jPanelPrincipal, "padrao");
     }
-    
-  
-        
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabelUsuario = new javax.swing.JLabel();
         jPanelPrincipal = new javax.swing.JPanel();
         jPanelPadrao = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -61,6 +59,10 @@ public class cronoFrame extends javax.swing.JFrame {
         LabelSenha = new javax.swing.JLabel();
         btnEntrar = new javax.swing.JButton();
         cpSenha = new javax.swing.JPasswordField();
+        jLabelInsertUsuario = new javax.swing.JLabel();
+        jLabelInsertCodigoUsuario = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelInsertData = new javax.swing.JLabel();
         baraMenuSuperior = new javax.swing.JMenuBar();
         jMenuInicio = new javax.swing.JMenu();
         jMenuUsuario = new javax.swing.JMenu();
@@ -86,6 +88,9 @@ public class cronoFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setPreferredSize(new java.awt.Dimension(900, 600));
+
+        jLabelUsuario.setText("Usuario:");
 
         jPanelPrincipal.setLayout(new java.awt.CardLayout());
 
@@ -106,7 +111,7 @@ public class cronoFrame extends javax.swing.JFrame {
         jPanelPadrao.setLayout(jPanelPadraoLayout);
         jPanelPadraoLayout.setHorizontalGroup(
             jPanelPadraoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanelPadraoLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jButtonLogin)
@@ -119,7 +124,7 @@ public class cronoFrame extends javax.swing.JFrame {
                 .addComponent(jButtonLogin)
                 .addGap(144, 144, 144)
                 .addComponent(jLabel1)
-                .addContainerGap(221, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanelPrincipal.add(jPanelPadrao, "card3");
@@ -208,6 +213,14 @@ public class cronoFrame extends javax.swing.JFrame {
         );
 
         jPanelPrincipal.add(jPanelLogin, "card2");
+
+        jLabelInsertUsuario.setText("xxx");
+
+        jLabelInsertCodigoUsuario.setText("xxx");
+
+        jLabel2.setText("Data:");
+
+        jLabelInsertData.setText("xx/xx/xxxx");
 
         baraMenuSuperior.setBackground(new java.awt.Color(51, 51, 255));
 
@@ -357,11 +370,30 @@ public class cronoFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelUsuario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelInsertCodigoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jLabelInsertUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelInsertData, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelUsuario)
+                    .addComponent(jLabelInsertCodigoUsuario)
+                    .addComponent(jLabelInsertUsuario)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabelInsertData)))
         );
 
         pack();
@@ -414,7 +446,7 @@ public class cronoFrame extends javax.swing.JFrame {
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         jPanelPrincipal.add(jPanelPadrao, "padrao");
         this.cl.show(jPanelPrincipal, "padrao");
-         
+
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void cpSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpSenhaActionPerformed
@@ -508,11 +540,15 @@ public class cronoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonLoginMouseClicked
 
     private void jMenuTomadaTempoIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuTomadaTempoIniciarMouseClicked
-        PanelTomadaDeTempo tomada = new PanelTomadaDeTempo();
+        try {
+            PanelTomadaDeTempo tomada = new PanelTomadaDeTempo(this.codigoUsuario);
             jPanelPrincipal.add(tomada, "tomada");
             this.cl.show(jPanelPrincipal, "tomada");
-        
-        
+        } catch (SQLException ex) {
+            Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }//GEN-LAST:event_jMenuTomadaTempoIniciarMouseClicked
 
     /**
@@ -559,7 +595,12 @@ public class cronoFrame extends javax.swing.JFrame {
     private javax.swing.JTextField cpUsuario;
     private javax.swing.JButton jButtonLogin;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelInsertCodigoUsuario;
+    private javax.swing.JLabel jLabelInsertData;
+    private javax.swing.JLabel jLabelInsertUsuario;
     private javax.swing.JLabel jLabelTitulo;
+    private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JLabel jLabelnome;
     private javax.swing.JMenu jMenuElemento;
     private javax.swing.JMenuItem jMenuElementoCadastro;

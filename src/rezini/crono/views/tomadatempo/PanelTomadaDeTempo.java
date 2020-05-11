@@ -5,9 +5,27 @@
  */
 package rezini.crono.views.tomadatempo;
 
+import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableModel;
+import rezini.crono.dao.OperacaoDao;
+import rezini.crono.model.Operacao;
+import rezini.crono.Utilidades.ObterData;
+import rezini.crono.dao.ElementosDao;
+import rezini.crono.model.TomadaDeTempo;
+import rezini.crono.dao.TomadaDeTempoDao;
+import rezini.crono.model.Elementos;
 
 /**
  *
@@ -15,19 +33,61 @@ import javax.swing.Timer;
  */
 public class PanelTomadaDeTempo extends javax.swing.JPanel {
 
-     private Timer timer;  
+    private int codigoUsuario;
+    private Timer timer;
     private int currentSegundo = 0;
     private int currentMinuto = 0;
     private int currentHora = 0;
     private int velocidade = 1000;
+    private final CardLayout cl;
+    private String dataCronometragem;
 
     /**
      * Creates new form PanelTomadaDeTempo
      */
-    public PanelTomadaDeTempo() {
+    public PanelTomadaDeTempo(int cod) throws SQLException {
+        this.codigoUsuario = cod;
         initComponents();
         iniciarCintagem();
         stopTime();
+        this.cl = (CardLayout) this.getLayout();
+        popularTabela();
+    }
+
+    private void popularTabela() throws SQLException {
+
+        OperacaoDao ope = new OperacaoDao();
+        List<Operacao> listaProdutos;
+        listaProdutos = ope.listaOperacoesComElementos();
+        DefaultTableModel model = (DefaultTableModel) jTableListaOperacao.getModel();
+        List<Object> lista = new ArrayList<>();
+        for (int i = 0; i < listaProdutos.size(); i++) {
+            Operacao p = listaProdutos.get(i);
+            lista.add(new Object[]{p.getCodOperacao(), p.getNomeOperacao(), p.getNomeProduto(), p.getDescOperacao()});
+        }
+        for (int idx = 0; idx < lista.size(); idx++) {
+            model.addRow((Object[]) lista.get(idx));
+        }
+    }
+
+    private void criarTabela(int codOperacao) throws SQLException {
+        /**
+         * Cria a Tabela de elementos a serem cronometrados apartir dos
+         * elementos cadastrados no banco de dados;
+         */
+        List eleme = new ArrayList();
+        ElementosDao lista = new ElementosDao();
+        List<Elementos> listaElementos;
+        listaElementos = lista.listarElementos(codOperacao);
+        for (int i = 0; i < listaElementos.size(); i++) {
+            Elementos p = listaElementos.get(i);
+            eleme.add(p.getNomeElemento());
+        }
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        for (int i = 0; i < eleme.size(); i++) {
+            model.addColumn(eleme.get(i));
+        }
+
     }
 
     /**
@@ -39,75 +99,43 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelTomadaDeTempo = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        label = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
         jPanelListaOperacao = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableListaOperacao = new javax.swing.JTable();
         jLabelTitulo1 = new javax.swing.JLabel();
+        jPanelTomadaDeTempo = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        label = new javax.swing.JLabel();
+        jLabelTituloTomada = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanelCadastroTomada = new javax.swing.JPanel();
+        jLabelCodigo = new javax.swing.JLabel();
+        jLabelNome = new javax.swing.JLabel();
+        jLabelInsertCodigo = new javax.swing.JLabel();
+        jLabelInsertNome = new javax.swing.JLabel();
+        jLabelProduto = new javax.swing.JLabel();
+        jLabelInsertProduto = new javax.swing.JLabel();
+        jLabelTitulo = new javax.swing.JLabel();
+        jLabelDescricao = new javax.swing.JLabel();
+        jLabelInsertDescricao = new javax.swing.JLabel();
+        jLabelNomeCronometrista = new javax.swing.JLabel();
+        jLabelDescricaoTomada = new javax.swing.JLabel();
+        jLabelData = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextAreaDescricao = new javax.swing.JTextArea();
+        jTextFieldNome = new javax.swing.JTextField();
+        jLabelHora = new javax.swing.JLabel();
+        jButtonCancelar = new javax.swing.JButton();
+        jButtonIniciarTomada = new javax.swing.JButton();
+        jLabelInsertData = new javax.swing.JLabel();
+        jLabelInsertHora = new javax.swing.JLabel();
 
         setLayout(new java.awt.CardLayout());
 
-        jButton1.setText("inicio");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
-
-        jButton2.setText("pare");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanelTomadaDeTempoLayout = new javax.swing.GroupLayout(jPanelTomadaDeTempo);
-        jPanelTomadaDeTempo.setLayout(jPanelTomadaDeTempoLayout);
-        jPanelTomadaDeTempoLayout.setHorizontalGroup(
-            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
-                .addContainerGap(323, Short.MAX_VALUE)
-                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelTomadaDeTempoLayout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap())
-        );
-        jPanelTomadaDeTempoLayout.setVerticalGroup(
-            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
-                .addGap(0, 340, Short.MAX_VALUE)
-                .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(90, 90, 90)
-                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2)))
-        );
-
-        add(jPanelTomadaDeTempo, "card2");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 491, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 509, Short.MAX_VALUE)
-        );
-
-        add(jPanel1, "card3");
-
         jPanelListaOperacao.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
 
-        jTableListaOperacao.setBorder(new javax.swing.border.MatteBorder(null));
         jTableListaOperacao.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -131,7 +159,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         jPanelListaOperacao.setLayout(jPanelListaOperacaoLayout);
         jPanelListaOperacaoLayout.setHorizontalGroup(
             jPanelListaOperacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelTitulo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabelTitulo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanelListaOperacaoLayout.setVerticalGroup(
@@ -140,10 +168,238 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabelTitulo1)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
         );
 
         add(jPanelListaOperacao, "card3");
+
+        jButton1.setText("inicio");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+
+        jButton2.setText("pare");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+
+        jLabelTituloTomada.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabelTituloTomada.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTituloTomada.setText("Tomada De tempo");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanelTomadaDeTempoLayout = new javax.swing.GroupLayout(jPanelTomadaDeTempo);
+        jPanelTomadaDeTempo.setLayout(jPanelTomadaDeTempoLayout);
+        jPanelTomadaDeTempoLayout.setHorizontalGroup(
+            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
+            .addComponent(jLabelTituloTomada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
+        );
+        jPanelTomadaDeTempoLayout.setVerticalGroup(
+            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTomadaDeTempoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelTituloTomada)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
+                        .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+        );
+
+        add(jPanelTomadaDeTempo, "card2");
+
+        jPanelCadastroTomada.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
+
+        jLabelCodigo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelCodigo.setText("Codigo:");
+
+        jLabelNome.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelNome.setText("Nome:");
+
+        jLabelInsertCodigo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertCodigo.setText("xxx");
+
+        jLabelInsertNome.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertNome.setText("xxx");
+
+        jLabelProduto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelProduto.setText("Produto:");
+
+        jLabelInsertProduto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertProduto.setText("xxx");
+
+        jLabelTitulo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabelTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTitulo.setText("Cadastro Tomada de Tempo");
+
+        jLabelDescricao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelDescricao.setText("Descrição:");
+
+        jLabelInsertDescricao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertDescricao.setText("xxx");
+
+        jLabelNomeCronometrista.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelNomeCronometrista.setText("Nome cronometrista:");
+
+        jLabelDescricaoTomada.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelDescricaoTomada.setText("Descrição da tomada de tempo:");
+
+        jLabelData.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelData.setText("Data:");
+
+        jTextAreaDescricao.setColumns(20);
+        jTextAreaDescricao.setRows(5);
+        jScrollPane2.setViewportView(jTextAreaDescricao);
+
+        jTextFieldNome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldNomeActionPerformed(evt);
+            }
+        });
+
+        jLabelHora.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelHora.setText("Hora:");
+
+        jButtonCancelar.setBackground(new java.awt.Color(255, 153, 51));
+        jButtonCancelar.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+        jButtonCancelar.setText("Cancelar");
+        jButtonCancelar.setPreferredSize(new java.awt.Dimension(70, 23));
+        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelarActionPerformed(evt);
+            }
+        });
+
+        jButtonIniciarTomada.setBackground(new java.awt.Color(0, 255, 0));
+        jButtonIniciarTomada.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+        jButtonIniciarTomada.setText("Iniciar");
+        jButtonIniciarTomada.setPreferredSize(new java.awt.Dimension(70, 23));
+        jButtonIniciarTomada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonIniciarTomadaMouseClicked(evt);
+            }
+        });
+        jButtonIniciarTomada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonIniciarTomadaActionPerformed(evt);
+            }
+        });
+
+        jLabelInsertData.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertData.setText("xxx");
+
+        jLabelInsertHora.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelInsertHora.setText("xxx");
+
+        javax.swing.GroupLayout jPanelCadastroTomadaLayout = new javax.swing.GroupLayout(jPanelCadastroTomada);
+        jPanelCadastroTomada.setLayout(jPanelCadastroTomadaLayout);
+        jPanelCadastroTomadaLayout.setHorizontalGroup(
+            jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
+                .addComponent(jLabelDescricaoTomada)
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane2))
+            .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
+                .addComponent(jLabelDescricao)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelInsertDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
+                .addComponent(jLabelCodigo)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelInsertCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelNome)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelInsertNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelProduto)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelInsertProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButtonCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jButtonIniciarTomada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
+                .addComponent(jLabelNomeCronometrista)
+                .addGap(0, 0, 0)
+                .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jLabelData)
+                .addGap(1, 1, 1)
+                .addComponent(jLabelInsertData, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(jLabelHora)
+                .addGap(1, 1, 1)
+                .addComponent(jLabelInsertHora, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+        );
+        jPanelCadastroTomadaLayout.setVerticalGroup(
+            jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelTitulo)
+                .addGap(22, 22, 22)
+                .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelInsertProduto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabelCodigo)
+                        .addComponent(jLabelNome)
+                        .addComponent(jLabelInsertCodigo)
+                        .addComponent(jLabelInsertNome)
+                        .addComponent(jLabelProduto)))
+                .addGap(22, 22, 22)
+                .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelDescricao)
+                    .addComponent(jLabelInsertDescricao))
+                .addGap(22, 22, 22)
+                .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelNomeCronometrista)
+                    .addComponent(jLabelData)
+                    .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelHora)
+                    .addComponent(jLabelInsertData)
+                    .addComponent(jLabelInsertHora))
+                .addGap(20, 20, 20)
+                .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelDescricaoTomada)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 217, Short.MAX_VALUE)
+                .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonIniciarTomada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        add(jPanelCadastroTomada, "card3");
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
@@ -155,71 +411,149 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         stopTime();
     }//GEN-LAST:event_jButton2MouseClicked
 
-    private void jTableListaOperacaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaOperacaoMouseClicked
+    private void jTextFieldNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNomeActionPerformed
 
-        int linha = jTableListaOperacao.getSelectedRow();
-        String operacao = jTableListaOperacao.getValueAt(linha, 1).toString();
-        String descricao = jTableListaOperacao.getValueAt(linha, 3).toString();
-        String codigo = jTableListaOperacao.getValueAt(linha, 0).toString();
-        int cod = Integer.parseInt(codigo);
-
-       /* jLabelInsertDescricao.setText(descricao);
-        jLabelInsertOperacao.setText(operacao);
-        this.add(jPanelListaElementos, "lista");
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
+        this.add(jPanelListaOperacao, "lista");
         this.cl.show(this, "lista");
-        try {
-            this.popularTabelaElemento(cod);
-        } catch (SQLException ex) {
-            Logger.getLogger(PanelListaDeElemento.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-    }//GEN-LAST:event_jTableListaOperacaoMouseClicked
-    //metodo que recebe o tempo q o microondas vai aquecer o alimento
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
 
-  private void iniciarCintagem() {
+    private void jTableListaOperacaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaOperacaoMouseClicked
+        int linha = jTableListaOperacao.getSelectedRow();
+        ///Problema a ser resolvido ele indica que o array esta fora do tamanho pegando um numero negativo no primeiro clic.
+        if (linha >= 0) {
+            String codigo = jTableListaOperacao.getValueAt(linha, 0).toString();
+            String nome = jTableListaOperacao.getValueAt(linha, 1).toString();
+            String produto = jTableListaOperacao.getValueAt(linha, 2).toString();
+            String descricao = jTableListaOperacao.getValueAt(linha, 3).toString();
+            this.dataCronometragem = ObterData.obterData("yyyy-MM-dd HH:mm:ss");
+            jLabelInsertData.setText(ObterData.obterData("dd/MM/yyyy"));
+            jLabelInsertHora.setText(ObterData.obterData("HH:mm:ss"));
+            jLabelInsertDescricao.setText(descricao);
+            jLabelInsertNome.setText(nome);
+            jLabelInsertCodigo.setText(codigo);
+            jLabelInsertProduto.setText(produto);
+            this.add(jPanelCadastroTomada, "cadastro");
+            this.cl.show(this, "cadastro");
+
+        }
+    }//GEN-LAST:event_jTableListaOperacaoMouseClicked
+
+    private void jButtonIniciarTomadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarTomadaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonIniciarTomadaActionPerformed
+
+    private void jButtonIniciarTomadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonIniciarTomadaMouseClicked
+        if (validarCampos()) {
+            try {
+                int codigo = Integer.parseInt(jLabelInsertCodigo.getText());
+                System.out.println(codigo);
+                TomadaDeTempo tomada = new TomadaDeTempo();
+                tomada.setNomeCronometrista(jTextFieldNome.getText());
+                tomada.setCodOperacao(Integer.parseInt(jLabelInsertCodigo.getText()));
+                tomada.setDataTomadaTempo(this.dataCronometragem);
+                tomada.setDescTomadaTempo(jTextAreaDescricao.getText());
+                tomada.setCodUsuario(this.codigoUsuario);
+                TomadaDeTempoDao cadastro = new TomadaDeTempoDao();
+                cadastro.inserir(tomada);
+                this.criarTabela(codigo);
+                this.add(jPanelTomadaDeTempo, "tomada");
+                this.cl.show(this, "tomada");
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Falha no cadastro.");
+                Logger.getLogger(PanelTomadaDeTempo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButtonIniciarTomadaMouseClicked
+
+    private boolean validarCampos() {
+        String descricao = jTextAreaDescricao.getText();
+        String nome = jTextFieldNome.getText();
+
+        if (nome.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe um nome do  cronometrista.");
+            return false;
+        }
+        if (descricao.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Informe uma descricao");
+            return false;
+
+        } else {
+            return true;
+        }
+
+    }
+
+//metodo que recebe o tempo q o microondas vai aquecer o alimento
+    private void iniciarCintagem() {
         ActionListener action = (ActionEvent e) -> {
             currentSegundo++;
-            
-            if(currentSegundo==60){
+
+            if (currentSegundo == 60) {
                 currentMinuto++;
                 currentSegundo = 0;
             }
-            
-            if(currentMinuto==60){
+
+            if (currentMinuto == 60) {
                 currentHora++;
                 currentMinuto = 0;
             }
-            
-            String hr = currentHora <= 9? "0"+currentHora:currentHora+"";
-            String min = currentMinuto <= 9? "0"+currentMinuto:currentMinuto+"";
-            String seg = currentSegundo <= 9? "0"+currentSegundo:currentSegundo+"";
-            
-            label.setText(hr+":"+min+":"+seg);  
-        };  
-        this.timer = new Timer(velocidade, action);  
+
+            String hr = currentHora <= 9 ? "0" + currentHora : currentHora + "";
+            String min = currentMinuto <= 9 ? "0" + currentMinuto : currentMinuto + "";
+            String seg = currentSegundo <= 9 ? "0" + currentSegundo : currentSegundo + "";
+
+            label.setText(hr + ":" + min + ":" + seg);
+        };
+        this.timer = new Timer(velocidade, action);
         this.timer.start();
     }
 
-
-private void stopTime() {
+    private void stopTime() {
         timer.stop();
         currentHora = 0;
         currentMinuto = 0;
         currentSegundo = 0;
         label.setText("00:00:00");
-}
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCancelar;
+    private javax.swing.JButton jButtonIniciarTomada;
+    private javax.swing.JLabel jLabelCodigo;
+    private javax.swing.JLabel jLabelData;
+    private javax.swing.JLabel jLabelDescricao;
+    private javax.swing.JLabel jLabelDescricaoTomada;
+    private javax.swing.JLabel jLabelHora;
+    private javax.swing.JLabel jLabelInsertCodigo;
+    private javax.swing.JLabel jLabelInsertData;
+    private javax.swing.JLabel jLabelInsertDescricao;
+    private javax.swing.JLabel jLabelInsertHora;
+    private javax.swing.JLabel jLabelInsertNome;
+    private javax.swing.JLabel jLabelInsertProduto;
+    private javax.swing.JLabel jLabelNome;
+    private javax.swing.JLabel jLabelNomeCronometrista;
+    private javax.swing.JLabel jLabelProduto;
+    private javax.swing.JLabel jLabelTitulo;
     private javax.swing.JLabel jLabelTitulo1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabelTituloTomada;
+    private javax.swing.JPanel jPanelCadastroTomada;
     private javax.swing.JPanel jPanelListaOperacao;
     private javax.swing.JPanel jPanelTomadaDeTempo;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTableListaOperacao;
+    private javax.swing.JTextArea jTextAreaDescricao;
+    private javax.swing.JTextField jTextFieldNome;
     private javax.swing.JLabel label;
     // End of variables declaration//GEN-END:variables
 }
-///https://pt.stackoverflow.com/questions/396127/java-cronometro-sem-swing-timer-e-com-mvc
+///site onde busquei modelo de Cronometro
 //http://procode-java.blogspot.com/2014/07/fato-criando-um-cronometro-em-java.html

@@ -44,13 +44,13 @@ public class ElementosDao extends ConnectionFactory {
         this.con.close();
 
     }
-public List<Elementos> listarElementos(int codProduto) throws SQLException {
+public List<Elementos> listarElementos(int codOperacao) throws SQLException {
         String sql = "select * from elemento where codOperacao = ?";
         
         List<Elementos> elementos = null;
 
         try (PreparedStatement st = this.con.prepareStatement(sql)) {
-              st.setInt(1, codProduto);
+              st.setInt(1, codOperacao);
             ResultSet rs = st.executeQuery();
 
             elementos = new ArrayList<Elementos>();

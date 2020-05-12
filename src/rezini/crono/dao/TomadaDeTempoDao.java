@@ -30,7 +30,7 @@ public class TomadaDeTempoDao extends ConnectionFactory {
             st.setString(2, tomada.getNomeCronometrista());
             st.setString(3, tomada.getDescTomadaTempo());
             st.setInt(4, tomada.getCodOperacao());
-              st.setInt(5, tomada.getCodUsuario());
+            st.setInt(5, tomada.getCodUsuario());
 
             st.execute();
             st.close();
@@ -38,11 +38,13 @@ public class TomadaDeTempoDao extends ConnectionFactory {
         this.con.close();
     }
 
-    public int ultimaTomada() throws SQLException {
-        String sql = "SELECT MAX(codTomadaTempo) FROM rezinicrono.tomadatempo;";
+    public int ultimaTomada(String data) throws SQLException {
+        String sql = "SELECT * FROM tomadatempo where dataTomadaTempo = ?;";
         int cod = 0;
-        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
-            try ( ResultSet rs = st.executeQuery()) {
+        try (PreparedStatement st = this.con.prepareStatement(sql)){
+             st.setString(1, data);
+             try ( ResultSet rs = st.executeQuery()) {
+
                 if (rs.next()) {
                     cod = (rs.getInt("codTomadaTempo"));
                 }
@@ -50,7 +52,6 @@ public class TomadaDeTempoDao extends ConnectionFactory {
             st.close();
         }
         this.con.close();
-
         return cod;
     }
 }

@@ -15,17 +15,17 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import rezini.crono.dao.OperacaoDao;
 import rezini.crono.model.Operacao;
 import rezini.crono.Utilidades.ObterData;
 import rezini.crono.dao.ElementosDao;
+import rezini.crono.dao.LeituraDao;
 import rezini.crono.model.TomadaDeTempo;
 import rezini.crono.dao.TomadaDeTempoDao;
 import rezini.crono.model.Elementos;
+import rezini.crono.model.Leitura;
 
 /**
  *
@@ -33,14 +33,20 @@ import rezini.crono.model.Elementos;
  */
 public class PanelTomadaDeTempo extends javax.swing.JPanel {
 
+    private int codigoTomada;
+    private int tomada = 0;
+    private int elemento = 0;
+    private int contadorElemento = 1;
     private int codigoUsuario;
     private Timer timer;
+    private int currentMilessimo = 0;
     private int currentSegundo = 0;
     private int currentMinuto = 0;
     private int currentHora = 0;
-    private int velocidade = 1000;
+    private int velocidade = -1;
     private final CardLayout cl;
     private String dataCronometragem;
+    public List<Object> listaTempos = new ArrayList<>();
 
     /**
      * Creates new form PanelTomadaDeTempo
@@ -48,14 +54,16 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
     public PanelTomadaDeTempo(int cod) throws SQLException {
         this.codigoUsuario = cod;
         initComponents();
-        iniciarCintagem();
+        iniciarCronometro();
         stopTime();
         this.cl = (CardLayout) this.getLayout();
         popularTabela();
+        jButtonFim.setVisible(false);
+        jButtonProximaTomada.setVisible(false);
+        jButtonProximoElemento.setVisible(false);
     }
 
     private void popularTabela() throws SQLException {
-
         OperacaoDao ope = new OperacaoDao();
         List<Operacao> listaProdutos;
         listaProdutos = ope.listaOperacoesComElementos();
@@ -70,12 +78,24 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         }
     }
 
+    private void addLinha() {
+        /**
+         * Adiciona uma linha a tabela de cronometragem e zera o contador de
+         * elementos.
+         */
+        this.tomada++;
+        DefaultTableModel model = (DefaultTableModel) jTableElementos.getModel();
+        String[] toma = {(this.tomada + 1) + "° Tomada", ""};
+        model.addRow(toma);
+    }
+
     private void criarTabela(int codOperacao) throws SQLException {
         /**
          * Cria a Tabela de elementos a serem cronometrados apartir dos
          * elementos cadastrados no banco de dados;
          */
         List eleme = new ArrayList();
+        eleme.add("Tomada");
         ElementosDao lista = new ElementosDao();
         List<Elementos> listaElementos;
         listaElementos = lista.listarElementos(codOperacao);
@@ -83,10 +103,15 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
             Elementos p = listaElementos.get(i);
             eleme.add(p.getNomeElemento());
         }
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        //total de elementos da tabela
+        this.elemento = eleme.size();
+
+        DefaultTableModel model = (DefaultTableModel) jTableElementos.getModel();
         for (int i = 0; i < eleme.size(); i++) {
             model.addColumn(eleme.get(i));
         }
+        String[] toma = {(this.tomada + 1) + " Tomada", ""};
+        model.addRow(toma);
 
     }
 
@@ -103,13 +128,6 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableListaOperacao = new javax.swing.JTable();
         jLabelTitulo1 = new javax.swing.JLabel();
-        jPanelTomadaDeTempo = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        label = new javax.swing.JLabel();
-        jLabelTituloTomada = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jPanelCadastroTomada = new javax.swing.JPanel();
         jLabelCodigo = new javax.swing.JLabel();
         jLabelNome = new javax.swing.JLabel();
@@ -131,6 +149,16 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         jButtonIniciarTomada = new javax.swing.JButton();
         jLabelInsertData = new javax.swing.JLabel();
         jLabelInsertHora = new javax.swing.JLabel();
+        jPanelTomadaDeTempo = new javax.swing.JPanel();
+        jButtonInicio = new javax.swing.JButton();
+        jButtonFim = new javax.swing.JButton();
+        jLabelCronometro = new javax.swing.JLabel();
+        jLabelTituloTomada = new javax.swing.JLabel();
+        jButtonProximoElemento = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableElementos = new javax.swing.JTable();
+        jButtonCancelarTomada = new javax.swing.JButton();
+        jButtonProximaTomada = new javax.swing.JButton();
 
         setLayout(new java.awt.CardLayout());
 
@@ -159,7 +187,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         jPanelListaOperacao.setLayout(jPanelListaOperacaoLayout);
         jPanelListaOperacaoLayout.setHorizontalGroup(
             jPanelListaOperacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelTitulo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE)
+            .addComponent(jLabelTitulo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanelListaOperacaoLayout.setVerticalGroup(
@@ -168,72 +196,10 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabelTitulo1)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE))
         );
 
         add(jPanelListaOperacao, "card3");
-
-        jButton1.setText("inicio");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
-
-        jButton2.setText("pare");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
-            }
-        });
-
-        jLabelTituloTomada.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabelTituloTomada.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTituloTomada.setText("Tomada De tempo");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane3.setViewportView(jTable1);
-
-        javax.swing.GroupLayout jPanelTomadaDeTempoLayout = new javax.swing.GroupLayout(jPanelTomadaDeTempo);
-        jPanelTomadaDeTempo.setLayout(jPanelTomadaDeTempoLayout);
-        jPanelTomadaDeTempoLayout.setHorizontalGroup(
-            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
-            .addComponent(jLabelTituloTomada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
-        );
-        jPanelTomadaDeTempoLayout.setVerticalGroup(
-            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelTomadaDeTempoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelTituloTomada)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
-                        .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
-        );
-
-        add(jPanelTomadaDeTempo, "card2");
 
         jPanelCadastroTomada.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
 
@@ -346,8 +312,8 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
             .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jButtonCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(jButtonIniciarTomada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonIniciarTomada, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanelCadastroTomadaLayout.createSequentialGroup()
                 .addComponent(jLabelNomeCronometrista)
@@ -360,7 +326,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
                 .addGap(5, 5, 5)
                 .addComponent(jLabelHora)
                 .addGap(1, 1, 1)
-                .addComponent(jLabelInsertHora, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+                .addComponent(jLabelInsertHora, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
         );
         jPanelCadastroTomadaLayout.setVerticalGroup(
             jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -392,7 +358,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
                 .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelDescricaoTomada)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 217, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 220, Short.MAX_VALUE)
                 .addGroup(jPanelCadastroTomadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonIniciarTomada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -400,16 +366,145 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         );
 
         add(jPanelCadastroTomada, "card3");
+
+        jPanelTomadaDeTempo.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
+
+        jButtonInicio.setBackground(new java.awt.Color(51, 255, 51));
+        jButtonInicio.setText("Iniciar");
+        jButtonInicio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonInicioMouseClicked(evt);
+            }
+        });
+
+        jButtonFim.setBackground(new java.awt.Color(255, 51, 51));
+        jButtonFim.setText("Fim");
+        jButtonFim.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonFimMouseClicked(evt);
+            }
+        });
+
+        jLabelCronometro.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabelTituloTomada.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabelTituloTomada.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTituloTomada.setText("Tomada De tempo");
+
+        jButtonProximoElemento.setBackground(new java.awt.Color(51, 51, 255));
+        jButtonProximoElemento.setText("Proximo Elemento");
+        jButtonProximoElemento.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonProximoElementoMouseClicked(evt);
+            }
+        });
+        jButtonProximoElemento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonProximoElementoActionPerformed(evt);
+            }
+        });
+
+        jTableElementos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jTableElementos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTableElementos);
+
+        jButtonCancelarTomada.setBackground(new java.awt.Color(255, 153, 51));
+        jButtonCancelarTomada.setText("Cancelar");
+        jButtonCancelarTomada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCancelarTomadaMouseClicked(evt);
+            }
+        });
+
+        jButtonProximaTomada.setBackground(new java.awt.Color(0, 255, 51));
+        jButtonProximaTomada.setText("Proxima tomada");
+        jButtonProximaTomada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonProximaTomadaMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelTomadaDeTempoLayout = new javax.swing.GroupLayout(jPanelTomadaDeTempo);
+        jPanelTomadaDeTempo.setLayout(jPanelTomadaDeTempoLayout);
+        jPanelTomadaDeTempoLayout.setHorizontalGroup(
+            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTomadaDeTempoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButtonCancelarTomada, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                    .addComponent(jButtonInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(55, 55, 55)
+                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanelTomadaDeTempoLayout.createSequentialGroup()
+                        .addComponent(jButtonProximoElemento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonProximaTomada, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonFim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addComponent(jLabelCronometro, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(174, 174, 174))
+            .addComponent(jLabelTituloTomada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane3)
+        );
+        jPanelTomadaDeTempoLayout.setVerticalGroup(
+            jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTomadaDeTempoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelTituloTomada)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelCronometro, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelTomadaDeTempoLayout.createSequentialGroup()
+                        .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonInicio)
+                            .addComponent(jButtonProximoElemento)
+                            .addComponent(jButtonProximaTomada))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanelTomadaDeTempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonFim)
+                            .addComponent(jButtonCancelarTomada))))
+                .addGap(10, 10, 10))
+        );
+
+        add(jPanelTomadaDeTempo, "card2");
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        iniciarCintagem();
+    private void jButtonInicioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonInicioMouseClicked
+        jButtonInicio.setVisible(false);
+        jButtonProximoElemento.setVisible(true);
+        iniciarCronometro();
+    }//GEN-LAST:event_jButtonInicioMouseClicked
 
-    }//GEN-LAST:event_jButton1MouseClicked
+    private void jButtonFimMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonFimMouseClicked
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        stopTime();
-    }//GEN-LAST:event_jButton2MouseClicked
+        Object[] options = {"Sim", "Não"};
+        int opcaoSelecionada = JOptionPane.showOptionDialog(null, "Salvar Tempos?", "Atenção!",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+        if (opcaoSelecionada == 0) {
+
+            for (int i = 0; i < this.listaTempos.size(); i++) {
+
+                try {
+                    Leitura leituras = (Leitura) this.listaTempos.get(i);
+                    LeituraDao lei = new LeituraDao();
+                    lei.inserir(leituras);
+                } catch (SQLException ex) {
+                    Logger.getLogger(PanelTomadaDeTempo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            stopTime();
+        }
+    }//GEN-LAST:event_jButtonFimMouseClicked
 
     private void jTextFieldNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNomeActionPerformed
         // TODO add your handling code here:
@@ -447,17 +542,18 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
 
     private void jButtonIniciarTomadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonIniciarTomadaMouseClicked
         if (validarCampos()) {
+
             try {
                 int codigo = Integer.parseInt(jLabelInsertCodigo.getText());
-                System.out.println(codigo);
-                TomadaDeTempo tomada = new TomadaDeTempo();
-                tomada.setNomeCronometrista(jTextFieldNome.getText());
-                tomada.setCodOperacao(Integer.parseInt(jLabelInsertCodigo.getText()));
-                tomada.setDataTomadaTempo(this.dataCronometragem);
-                tomada.setDescTomadaTempo(jTextAreaDescricao.getText());
-                tomada.setCodUsuario(this.codigoUsuario);
+                TomadaDeTempo tom = new TomadaDeTempo();
+                tom.setNomeCronometrista(jTextFieldNome.getText());
+                tom.setCodOperacao(Integer.parseInt(jLabelInsertCodigo.getText()));
+                tom.setDataTomadaTempo(this.dataCronometragem);
+                tom.setDescTomadaTempo(jTextAreaDescricao.getText());
+                tom.setCodUsuario(this.codigoUsuario);
                 TomadaDeTempoDao cadastro = new TomadaDeTempoDao();
-                cadastro.inserir(tomada);
+                cadastro.inserir(tom);
+                //busca o codigo da tomada de tempo salva no banco
                 this.criarTabela(codigo);
                 this.add(jPanelTomadaDeTempo, "tomada");
                 this.cl.show(this, "tomada");
@@ -465,8 +561,52 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Falha no cadastro.");
                 Logger.getLogger(PanelTomadaDeTempo.class.getName()).log(Level.SEVERE, null, ex);
             }
+            try {
+                TomadaDeTempoDao ultimo = new TomadaDeTempoDao();
+                this.codigoTomada = ultimo.ultimaTomada(this.dataCronometragem);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Falha au obter codigo da tomada.");
+                Logger.getLogger(PanelTomadaDeTempo.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jButtonIniciarTomadaMouseClicked
+
+    private void jButtonProximoElementoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProximoElementoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonProximoElementoActionPerformed
+
+    private void jButtonCancelarTomadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCancelarTomadaMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonCancelarTomadaMouseClicked
+
+    private void jButtonProximoElementoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonProximoElementoMouseClicked
+        Leitura leituras = new Leitura();
+        leituras.setCodLeitura(this.codigoTomada);//cod da leitura é o mesmo codigo da tomada de tempo
+        leituras.setSequencia(this.tomada + 1);
+        String tempo = jLabelCronometro.getText();
+        leituras.setLeitura(tempo);
+        this.listaTempos.add(leituras);
+        jTableElementos.setValueAt(tempo, this.tomada, this.contadorElemento);
+        this.contadorElemento++;
+        this.stopTime();
+        this.iniciarCronometro();
+        if (this.contadorElemento == this.elemento) {
+            jButtonProximaTomada.setVisible(true);
+            jButtonProximoElemento.setVisible(false);
+            jButtonFim.setVisible(true);
+            this.contadorElemento = 1;
+        }
+
+    }//GEN-LAST:event_jButtonProximoElementoMouseClicked
+
+    private void jButtonProximaTomadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonProximaTomadaMouseClicked
+        jButtonProximaTomada.setVisible(false);
+        jButtonFim.setVisible(false);
+        jButtonProximoElemento.setVisible(true);
+        this.stopTime();
+        this.iniciarCronometro();
+        this.addLinha();
+    }//GEN-LAST:event_jButtonProximaTomadaMouseClicked
 
     private boolean validarCampos() {
         String descricao = jTextAreaDescricao.getText();
@@ -487,10 +627,13 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
     }
 
 //metodo que recebe o tempo q o microondas vai aquecer o alimento
-    private void iniciarCintagem() {
+    private void iniciarCronometro() {
         ActionListener action = (ActionEvent e) -> {
-            currentSegundo++;
-
+            currentMilessimo++;
+            if (currentMilessimo == 1000) {
+                currentSegundo++;
+                currentMilessimo = 0;
+            }
             if (currentSegundo == 60) {
                 currentMinuto++;
                 currentSegundo = 0;
@@ -504,8 +647,8 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
             String hr = currentHora <= 9 ? "0" + currentHora : currentHora + "";
             String min = currentMinuto <= 9 ? "0" + currentMinuto : currentMinuto + "";
             String seg = currentSegundo <= 9 ? "0" + currentSegundo : currentSegundo + "";
-
-            label.setText(hr + ":" + min + ":" + seg);
+            String mil = currentMilessimo <= 9 ? "0" + currentMilessimo : currentMilessimo + "";
+            jLabelCronometro.setText(hr + ":" + min + ":" + seg + ":" + mil);
         };
         this.timer = new Timer(velocidade, action);
         this.timer.start();
@@ -516,16 +659,21 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         currentHora = 0;
         currentMinuto = 0;
         currentSegundo = 0;
-        label.setText("00:00:00");
+        currentMilessimo = 0;
+        jLabelCronometro.setText("00:00:00:000");
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonCancelar;
+    private javax.swing.JButton jButtonCancelarTomada;
+    private javax.swing.JButton jButtonFim;
     private javax.swing.JButton jButtonIniciarTomada;
+    private javax.swing.JButton jButtonInicio;
+    private javax.swing.JButton jButtonProximaTomada;
+    private javax.swing.JButton jButtonProximoElemento;
     private javax.swing.JLabel jLabelCodigo;
+    private javax.swing.JLabel jLabelCronometro;
     private javax.swing.JLabel jLabelData;
     private javax.swing.JLabel jLabelDescricao;
     private javax.swing.JLabel jLabelDescricaoTomada;
@@ -548,11 +696,10 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableElementos;
     private javax.swing.JTable jTableListaOperacao;
     private javax.swing.JTextArea jTextAreaDescricao;
     private javax.swing.JTextField jTextFieldNome;
-    private javax.swing.JLabel label;
     // End of variables declaration//GEN-END:variables
 }
 ///site onde busquei modelo de Cronometro

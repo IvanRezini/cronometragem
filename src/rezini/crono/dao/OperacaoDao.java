@@ -98,7 +98,8 @@ public class OperacaoDao extends ConnectionFactory {
         this.con.close();
         return operacoes;
     }
-      public List<Operacao> listaOperacoesComElementos() throws SQLException {
+
+    public List<Operacao> listaOperacoesComElementos() throws SQLException {
         String sql = "SELECT * FROM operacao INNER JOIN produto on operacao.codProduto = produto.codProduto WHERE statusOperacao = 0 ;";
         ///parametro "0" tras todas as operaçoes com elementos cadastrados
         List<Operacao> operacoes = null;
@@ -173,7 +174,7 @@ public class OperacaoDao extends ConnectionFactory {
     }
 
     public void alterarStatus(int cod) throws SQLException {
-        
+
         String sql = "UPDATE operacao SET statusOperacao = '0' WHERE (codOperacao = ?);";
 //Parametro "0" indica que a operçao tem elementos cadastrados
         try ( PreparedStatement st = this.con.prepareStatement(sql)) {
@@ -185,5 +186,7 @@ public class OperacaoDao extends ConnectionFactory {
         this.con.close();
 
     }
+
+  
 
 }

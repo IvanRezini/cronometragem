@@ -563,9 +563,13 @@ public class cronoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuTomadaTempoIniciarMouseClicked
 
     private void jMenuRelatorioGerarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuRelatorioGerarMouseClicked
-        PanelRelatorio relatorio = new PanelRelatorio();
-        jPanelPrincipal.add(relatorio, "relatorio");
-        this.cl.show(jPanelPrincipal, "relatorio");
+        try {
+            PanelRelatorio relatorio = new PanelRelatorio(this.codigoUsuario);
+            jPanelPrincipal.add(relatorio, "relatorio");
+            this.cl.show(jPanelPrincipal, "relatorio");
+        } catch (SQLException ex) {
+            Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuRelatorioGerarMouseClicked
 
     /**

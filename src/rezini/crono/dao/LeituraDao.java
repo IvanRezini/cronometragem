@@ -28,7 +28,7 @@ public class LeituraDao extends ConnectionFactory {
         try ( PreparedStatement st = this.con.prepareStatement(sql)) {
             st.setInt(1, leituras.getCodLeitura());
             st.setString(2, leituras.getLeitura());
-            st.setInt(1, leituras.getSequencia());
+            st.setInt(3, leituras.getSequencia());
             st.execute();
             st.close();
         }

@@ -18,6 +18,7 @@ import rezini.crono.views.operacao.PanelListagemOperacao;
 import rezini.crono.views.produto.PanelCadastroProduto;
 import rezini.crono.views.usuario.PanelCadastroUsuario;
 import rezini.crono.views.produto.PanelListarProdutos;
+import rezini.crono.views.relatorio.PanelRelatorio;
 import rezini.crono.views.tomadatempo.PanelTomadaDeTempo;
 import rezini.crono.views.usuario.PanelListaDeUsuarios;
 
@@ -82,6 +83,7 @@ public class cronoFrame extends javax.swing.JFrame {
         jMenuElementoCadastro = new javax.swing.JMenuItem();
         jMenuElementoListar = new javax.swing.JMenuItem();
         jMenuRelatorio = new javax.swing.JMenu();
+        jMenuRelatorioGerar = new javax.swing.JMenu();
         jMenuTomadaTempo = new javax.swing.JMenu();
         jMenuTomadaTempoIniciar = new javax.swing.JMenu();
 
@@ -350,6 +352,15 @@ public class cronoFrame extends javax.swing.JFrame {
         baraMenuSuperior.add(jMenuElemento);
 
         jMenuRelatorio.setText("Relatorios");
+
+        jMenuRelatorioGerar.setText("Gerar");
+        jMenuRelatorioGerar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenuRelatorioGerarMouseClicked(evt);
+            }
+        });
+        jMenuRelatorio.add(jMenuRelatorioGerar);
+
         baraMenuSuperior.add(jMenuRelatorio);
 
         jMenuTomadaTempo.setText("Tomada de tempo");
@@ -551,6 +562,12 @@ public class cronoFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenuTomadaTempoIniciarMouseClicked
 
+    private void jMenuRelatorioGerarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuRelatorioGerarMouseClicked
+        PanelRelatorio relatorio = new PanelRelatorio();
+        jPanelPrincipal.add(relatorio, "relatorio");
+        this.cl.show(jPanelPrincipal, "relatorio");
+    }//GEN-LAST:event_jMenuRelatorioGerarMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -615,6 +632,7 @@ public class cronoFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuProdutoEditar;
     private javax.swing.JMenuItem jMenuProdutoListar;
     private javax.swing.JMenu jMenuRelatorio;
+    private javax.swing.JMenu jMenuRelatorioGerar;
     private javax.swing.JMenu jMenuTomadaTempo;
     private javax.swing.JMenu jMenuTomadaTempoIniciar;
     private javax.swing.JMenu jMenuUsuario;

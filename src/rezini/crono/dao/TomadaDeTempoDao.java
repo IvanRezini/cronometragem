@@ -54,4 +54,17 @@ public class TomadaDeTempoDao extends ConnectionFactory {
         this.con.close();
         return cod;
     }
+  public void eliminar(int codTomada) throws SQLException {
+
+        String sql = "DELETE FROM tomadatempo WHERE codTomadaTempo = ?;";
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setInt(1, codTomada);
+            st.execute();
+            st.close();
+        }
+
+        this.con.close();
+    }
+
 }
+

@@ -7,7 +7,11 @@ package rezini.crono.views.relatorio;
 
 import java.awt.CardLayout;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import rezini.crono.Utilidades.ManipularData;
 import rezini.crono.controller.RelatorioController;
 
@@ -183,8 +187,8 @@ public class PanelRelatorio extends javax.swing.JPanel {
                 .addContainerGap(141, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMenuLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(85, 85, 85))
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(64, 64, 64))
         );
         jPanelMenuLayout.setVerticalGroup(
             jPanelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,10 +273,17 @@ public class PanelRelatorio extends javax.swing.JPanel {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         ManipularData data = new ManipularData();
+        String mensagem = "";
         String a = jFormattedDataInicial.getText();
         String b = jFormattedDataFinal.getText();
-        String tr = data.validarData(a, b);
-        System.out.println(tr);
+        mensagem = data.dataValida(a, b);
+        if ("".equals(mensagem)) {
+            mensagem = data.validarData(a, b);
+        }
+        if (!"".equals(mensagem)) {
+            JOptionPane.showMessageDialog(null, mensagem, "AVISO", JOptionPane.WARNING_MESSAGE);
+        }
+        
     }//GEN-LAST:event_jButton1MouseClicked
 
 

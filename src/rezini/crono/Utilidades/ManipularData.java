@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -57,15 +58,38 @@ public class ManipularData {
         long data = atual.getTimeInMillis();
         long dt1 = ini.getTimeInMillis();
         long dt2 = fim.getTimeInMillis();
-        System.out.println(data + "     " + dt1 + "             " + dt2);
         int diferencaDatas = (int) ((dt2 - dt1) / (24 * 60 * 60 * 1000));
         String mensagem = "";
 
-        if (dt1 > data || dt2 > data) {
-            mensagem = "Corija as datas";
+        if (dt1 > data) {
+            mensagem = "Datas inicial maior que a atual";
+        } else if (dt2 > data) {
+            mensagem = "Data final maior que a atual";
         } else if (diferencaDatas < 0) {
             mensagem = "Data inicial maior que que data final";
-        } 
- return mensagem;
+        }
+        return mensagem;
+    }
+
+    public String dataValida(String dateInicial, String dateFinal) {
+        Date date = null;
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            format.setLenient(false);
+            date = format.parse(dateInicial);
+        } catch (ParseException e) {
+            return "Data inicial inválida. Tente novamente!";
+
+        }
+        try {
+            format.setLenient(false);
+            date = format.parse(dateFinal);
+        } catch (ParseException e) {
+            return "Data final inválida. Tente novamente!";
+
+        }
+
+        return "";
+
     }
 }

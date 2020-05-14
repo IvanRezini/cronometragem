@@ -16,7 +16,7 @@ public class Operacao {
     private String descOperacao;
     private String createOperacao;
     private int codProduto;
-    private int statusOperacao; //1 operação sem elementos 2 operação com elementos cadastrados
+    private int statusOperacao; //"1" operação sem elementos "0" operação com elementos cadastrados
 
     public int getCodOperacao() {
         return codOperacao;

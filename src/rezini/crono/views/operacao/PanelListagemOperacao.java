@@ -57,7 +57,12 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
         for (int i = 0; i < listaProdutos.size(); i++) {
             Operacao p = listaProdutos.get(i);
-            lista.add(new Object[]{p.getCodOperacao(), p.getNomeOperacao(), p.getNomeProduto(), p.getDescOperacao()});
+            String ele= "sim";
+            if(p.getStatusOperacao()== 1){
+                ele= "não";
+            }
+            lista.add(new Object[]{p.getCodOperacao(), p.getNomeOperacao(),
+                p.getNomeProduto(), p.getDescOperacao(), ele});
               }
         for (int idx = 0; idx < lista.size(); idx++) {
             model.addRow((Object[]) lista.get(idx));
@@ -140,7 +145,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Codigo", "Nome", "Produto", "Descrição"
+                "Codigo", "Nome", "Produto", "Descrição", "Elementos Cadastrados"
             }
         ));
         jTableListaOperacao.addMouseListener(new java.awt.event.MouseAdapter() {

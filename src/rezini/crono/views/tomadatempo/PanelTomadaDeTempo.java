@@ -93,7 +93,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
 
     private void salvarLeitura() {
         Leitura le = new Leitura();
-        le.setCodLeitura(this.codigoTomada);
+        le.setCodTomada(this.codigoTomada);
         le.setSequencia(this.tomada + 1);
         le.setLeitura(jLabelCronometro.getText());
         this.listaTempos.add(le);

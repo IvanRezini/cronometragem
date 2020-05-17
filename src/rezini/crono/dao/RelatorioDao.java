@@ -11,7 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import rezini.crono.model.Leitura;
 import rezini.crono.model.Operacao;
+import rezini.crono.model.TomadaDeTempo;
 
 /**
  *
@@ -24,7 +26,6 @@ public class RelatorioDao extends ConnectionFactory {
     public RelatorioDao() {
         this.con = this.getConnection();
     }
-    
 
     public List<Operacao> operacaoPorProduto(int cod) throws SQLException {
         //parametro "0" traz as operacoes que posuem elementos cadastrados
@@ -56,4 +57,58 @@ public class RelatorioDao extends ConnectionFactory {
         return operacoes;
     }
 
+    public List<TomadaDeTempo> tomadaTempo(String dataInicial, String dataFinal, int codOperacao) throws SQLException {
+        String sql = "SELECT * FROM tomadatempo WHERE dataTomadaTempo > ?"
+                + "AND dataTomadaTempo < ? AND codOperacao = ?;";
+        TomadaDeTempo tom = null;
+        List<TomadaDeTempo> tomadas = null;
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setString(1, dataInicial);
+            st.setString(2, dataFinal);
+            st.setInt(3, codOperacao);
+
+            try ( ResultSet rs = st.executeQuery()) {
+                tomadas = new ArrayList<TomadaDeTempo>();
+                while (rs.next()) {
+                    tom = new TomadaDeTempo();
+                    tom.setCodTomadaTempo(rs.getInt("codTomadaTempo"));
+                    tom.setDataTomadaTempo(rs.getString("dataTomadaTempo"));
+                    tom.setDescTomadaTempo(rs.getString("DescTomadaTempo"));
+                    tom.setNomeCronometrista(rs.getString("nomeCronometrista"));
+                    tom.setCodUsuario(rs.getInt("codUsuario"));
+                    tomadas.add(tom);
+                 }
+            }
+            st.close();
+        }
+        this.con.close();
+        
+        return tomadas;
+    }
+
+    public List<Leitura> listaTempos(int cod) throws SQLException {
+        String sql = "SELECT * FROM leiturastempo WHERE codTomadaTempo = ?;";
+
+        Leitura leitura = null;
+        List<Leitura> leituras = null;
+     
+            try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+                st.setInt(1, cod);
+              try ( ResultSet rs = st.executeQuery()) {
+                    leituras = new ArrayList<Leitura>();
+                    while (rs.next()) {
+                        leitura = new Leitura();
+                        leitura.setCodTomada(rs.getInt("codTomadaTempo"));
+                        leitura.setLeitura(rs.getString("leitura"));
+                        leitura.setSequencia(rs.getInt("sequencia"));
+                        leituras.add(leitura);
+                    }
+                }
+                st.close();
+            }
+        
+        this.con.close();
+
+        return leituras;
+    }
 }

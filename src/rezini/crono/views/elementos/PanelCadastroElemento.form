@@ -168,7 +168,7 @@
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="jFormattedTextInsertInterferencia" max="32767" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  <Component id="jFormattedTextInsertRepeticao" max="32767" attributes="0"/>
+                  <Component id="jFormattedTextInserConcessao" max="32767" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="jFormattedTextInsertTotalPecas" max="32767" attributes="0"/>
               </Group>
@@ -196,7 +196,7 @@
                       <Component id="jTextInsertNome" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jFormattedTextInsertRitmo" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jFormattedTextInsertInterferencia" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jFormattedTextInsertRepeticao" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jFormattedTextInserConcessao" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jFormattedTextInsertTotalPecas" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -282,9 +282,9 @@
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="5" rowCount="0">
                     <Column editable="true" title="Nome" type="java.lang.Object"/>
-                    <Column editable="true" title="Ritmo" type="java.lang.Object"/>
-                    <Column editable="true" title="Interferencia" type="java.lang.Object"/>
-                    <Column editable="true" title="Repeti&#xe7;a&#xf5;" type="java.lang.Object"/>
+                    <Column editable="true" title="Ritmo %" type="java.lang.Object"/>
+                    <Column editable="true" title="Interferencia  %" type="java.lang.Object"/>
+                    <Column editable="true" title="Concess&#xe3;o %" type="java.lang.Object"/>
                     <Column editable="true" title="Total de pe&#xe7;as" type="java.lang.Object"/>
                   </Table>
                 </Property>
@@ -386,14 +386,14 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jFormattedTextInsertRitmoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextInsertRepeticao">
+        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextInserConcessao">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-              <Format format="#0" subtype="-1" type="0"/>
+              <Format subtype="0" type="0"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jFormattedTextInsertRepeticaoActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jFormattedTextInserConcessaoActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="jFormattedTextInsertTotalPecas">

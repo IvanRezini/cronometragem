@@ -13,7 +13,7 @@ public class Elementos {
     private String nomeElemento;
     private float ritmoElemento;
     private float interferenciaElemento;
-    private int repeticaoElemento;
+    private float concessaoElemento;
     private int totalDePecas;
     private int codOperacao;
 
@@ -41,12 +41,12 @@ public class Elementos {
         this.interferenciaElemento = interverenciaElemento;
     }
 
-    public int getRepeticaoElemento() {
-        return repeticaoElemento;
+    public float getConcessaoElemento() {
+        return concessaoElemento;
     }
 
-    public void setRepeticaoElemento(int repeticaoElemento) {
-        this.repeticaoElemento = repeticaoElemento;
+    public void setConcessaoElemento(float concessaoElemento) {
+        this.concessaoElemento = concessaoElemento;
     }
 
     public int getTotalDePecas() {

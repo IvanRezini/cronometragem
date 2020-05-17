@@ -89,7 +89,7 @@ public class PanelListagemOperacao extends javax.swing.JPanel {
 
         for (int i = 0; i < listaElementos.size(); i++) {
             Elementos p = listaElementos.get(i);
-            lista.add(new Object[]{p.getNomeElemento(), p.getRitmoElemento(), p.getInterferenciaElemento(), p.getRepeticaoElemento(), p.getTotalDePecas()});
+            lista.add(new Object[]{p.getNomeElemento(), p.getRitmoElemento(), p.getInterferenciaElemento(), p.getConcessaoElemento(), p.getTotalDePecas()});
         }
         for (int idx = 0; idx < lista.size(); idx++) {
             model.addRow((Object[]) lista.get(idx));

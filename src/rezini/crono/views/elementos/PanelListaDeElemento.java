@@ -67,7 +67,7 @@ public class PanelListaDeElemento extends javax.swing.JPanel {
 
         for (int i = 0; i < listaElementos.size(); i++) {
             Elementos e = listaElementos.get(i);
-            lista.add(new Object[]{e.getNomeElemento(), e.getRitmoElemento(), e.getInterferenciaElemento(), e.getRepeticaoElemento(), e.getTotalDePecas()});
+            lista.add(new Object[]{e.getNomeElemento(), e.getRitmoElemento(), e.getInterferenciaElemento(), e.getConcessaoElemento(), e.getTotalDePecas()});
         }
         for (int idx = 0; idx < lista.size(); idx++) {
             model.addRow((Object[]) lista.get(idx));

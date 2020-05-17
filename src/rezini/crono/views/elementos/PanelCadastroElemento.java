@@ -73,7 +73,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
         for (int i = 0; i < this.listaElementos.size(); i++) {
             Elementos e = (Elementos) this.listaElementos.get(i);
-            lista.add(new Object[]{e.getNomeElemento(), e.getRitmoElemento(), e.getInterferenciaElemento(), e.getRepeticaoElemento(), e.getTotalDePecas()});
+            lista.add(new Object[]{e.getNomeElemento(), e.getRitmoElemento(), e.getInterferenciaElemento(), e.getConcessaoElemento(), e.getTotalDePecas()});
         }
         for (int idx = 0; idx < lista.size(); idx++) {
             model.addRow((Object[]) lista.get(idx));
@@ -107,7 +107,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
         jButtonSalvar = new javax.swing.JButton();
         jButtonCancelar = new javax.swing.JButton();
         jFormattedTextInsertRitmo = new javax.swing.JFormattedTextField();
-        jFormattedTextInsertRepeticao = new javax.swing.JFormattedTextField();
+        jFormattedTextInserConcessao = new javax.swing.JFormattedTextField();
         jFormattedTextInsertTotalPecas = new javax.swing.JFormattedTextField();
         jFormattedTextInsertInterferencia = new javax.swing.JFormattedTextField();
         jButtonMenosElemento = new javax.swing.JButton();
@@ -180,7 +180,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Nome", "Ritmo", "Interferencia", "Repetiçaõ", "Total de peças"
+                "Nome", "Ritmo %", "Interferencia  %", "Concessão %", "Total de peças"
             }
         ));
         jTableCadastroElementos.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
@@ -232,10 +232,10 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
             }
         });
 
-        jFormattedTextInsertRepeticao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jFormattedTextInsertRepeticao.addActionListener(new java.awt.event.ActionListener() {
+        jFormattedTextInserConcessao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        jFormattedTextInserConcessao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jFormattedTextInsertRepeticaoActionPerformed(evt);
+                jFormattedTextInserConcessaoActionPerformed(evt);
             }
         });
 
@@ -299,7 +299,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(jFormattedTextInsertInterferencia)
                 .addGap(0, 0, 0)
-                .addComponent(jFormattedTextInsertRepeticao)
+                .addComponent(jFormattedTextInserConcessao)
                 .addGap(0, 0, 0)
                 .addComponent(jFormattedTextInsertTotalPecas))
         );
@@ -323,7 +323,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
                     .addComponent(jTextInsertNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jFormattedTextInsertRitmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jFormattedTextInsertInterferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jFormattedTextInsertRepeticao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextInserConcessao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jFormattedTextInsertTotalPecas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
                 .addGroup(jPanelCadastroElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -359,7 +359,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private boolean validarCampos() {
-        String repeticao = jFormattedTextInsertRepeticao.getText();
+        String repeticao = jFormattedTextInserConcessao.getText();
         repeticao = repeticao.replaceAll("[^0-9]", "");
 
         String totalPecas = jFormattedTextInsertTotalPecas.getText();
@@ -401,7 +401,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
     private void limparCampos() {
         jTextInsertNome.setText("");
-        jFormattedTextInsertRepeticao.setText("");
+        jFormattedTextInserConcessao.setText("");
         jFormattedTextInsertTotalPecas.setText("");
         jFormattedTextInsertRitmo.setText("");
         jFormattedTextInsertInterferencia.setText("");
@@ -410,7 +410,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     private void jButtonMaisElementoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMaisElementoMouseClicked
         if (validarCampos()) {
             int cod = Integer.parseInt(jLabelInsertCodigoOperacao.getText());
-            int repeticao = Integer.parseInt(jFormattedTextInsertRepeticao.getText());
+            int repeticao = Integer.parseInt(jFormattedTextInserConcessao.getText());
             int totalPecas = Integer.parseInt(jFormattedTextInsertTotalPecas.getText());
             String rit = jFormattedTextInsertRitmo.getText();
             rit = rit.replaceAll(",", ".");
@@ -422,7 +422,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
             Elementos el = new Elementos();
             el.setNomeElemento(jTextInsertNome.getText());
             el.setRitmoElemento(ritmo);
-            el.setRepeticaoElemento(repeticao);
+            el.setConcessaoElemento(repeticao);
             el.setInterferenciaElemento(interferencia);
             el.setTotalDePecas(totalPecas);
             el.setCodOperacao(cod);
@@ -436,7 +436,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
     private void ocultarCampos() {
         jTextInsertNome.setVisible(false);
-        jFormattedTextInsertRepeticao.setVisible(false);
+        jFormattedTextInserConcessao.setVisible(false);
         jFormattedTextInsertTotalPecas.setVisible(false);
         jFormattedTextInsertRitmo.setVisible(false);
         jFormattedTextInsertInterferencia.setVisible(false);
@@ -444,7 +444,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
 
     private void mostrarCampos() {
         jTextInsertNome.setVisible(true);
-        jFormattedTextInsertRepeticao.setVisible(true);
+        jFormattedTextInserConcessao.setVisible(true);
         jFormattedTextInsertTotalPecas.setVisible(true);
         jFormattedTextInsertRitmo.setVisible(true);
         jFormattedTextInsertInterferencia.setVisible(true);
@@ -454,9 +454,9 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jFormattedTextInsertRitmoActionPerformed
 
-    private void jFormattedTextInsertRepeticaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertRepeticaoActionPerformed
+    private void jFormattedTextInserConcessaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInserConcessaoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jFormattedTextInsertRepeticaoActionPerformed
+    }//GEN-LAST:event_jFormattedTextInserConcessaoActionPerformed
 
     private void jFormattedTextInsertTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextInsertTotalPecasActionPerformed
         // TODO add your handling code here:
@@ -492,7 +492,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     private void jButtonSalvarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSalvarMouseClicked
         if (validarCampos()) {
             int cod = Integer.parseInt(jLabelInsertCodigoOperacao.getText());
-            int repeticao = Integer.parseInt(jFormattedTextInsertRepeticao.getText());
+            float concessao = Float.parseFloat(jFormattedTextInserConcessao.getText());
             int totalPecas = Integer.parseInt(jFormattedTextInsertTotalPecas.getText());
             String rit = jFormattedTextInsertRitmo.getText();
             rit = rit.replaceAll(",", ".");
@@ -503,7 +503,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
             Elementos el = new Elementos();
             el.setNomeElemento(jTextInsertNome.getText());
             el.setRitmoElemento(ritmo);
-            el.setRepeticaoElemento(repeticao);
+            el.setConcessaoElemento(concessao);
             el.setInterferenciaElemento(interferencia);
             el.setTotalDePecas(totalPecas);
             el.setCodOperacao(cod);
@@ -547,7 +547,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
         Elementos e = (Elementos) this.listaElementos.get(i);
         jTextInsertNome.setText(e.getNomeElemento());
         jFormattedTextInsertRitmo.setText(e.getRitmoElemento() + "");
-        jFormattedTextInsertRepeticao.setText(e.getRepeticaoElemento() + "");
+        jFormattedTextInserConcessao.setText(e.getConcessaoElemento() + "");
         jFormattedTextInsertInterferencia.setText(e.getInterferenciaElemento() + "");
         jFormattedTextInsertTotalPecas.setText(e.getTotalDePecas() + "");
         this.listaElementos.remove(i);
@@ -562,8 +562,8 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     private javax.swing.JButton jButtonMaisElemento;
     private javax.swing.JButton jButtonMenosElemento;
     private javax.swing.JButton jButtonSalvar;
+    private javax.swing.JFormattedTextField jFormattedTextInserConcessao;
     private javax.swing.JFormattedTextField jFormattedTextInsertInterferencia;
-    private javax.swing.JFormattedTextField jFormattedTextInsertRepeticao;
     private javax.swing.JFormattedTextField jFormattedTextInsertRitmo;
     private javax.swing.JFormattedTextField jFormattedTextInsertTotalPecas;
     private javax.swing.JLabel jLabelInsertCodigoOperacao;

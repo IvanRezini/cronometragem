@@ -19,7 +19,7 @@ public class Leitura {
         return codLeitura;
     }
 
-    public void setCodLeitura(int codLeitura) {
+    public void setCodTomada(int codLeitura) {
         this.codLeitura = codLeitura;
     }
 

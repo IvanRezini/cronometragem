@@ -26,7 +26,7 @@ public class LeituraDao extends ConnectionFactory {
         String sql = "INSERT INTO leiturastempo (codTomadaTempo, leitura, sequencia) VALUES (?, ?, ?);";
 
         try ( PreparedStatement st = this.con.prepareStatement(sql)) {
-            st.setInt(1, leituras.getCodLeitura());
+            st.setInt(1, leituras.getCodTomada());
             st.setString(2, leituras.getLeitura());
             st.setInt(3, leituras.getSequencia());
             st.execute();

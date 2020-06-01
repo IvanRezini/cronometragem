@@ -97,7 +97,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         le.setSequencia(this.tomada + 1);
         le.setLeitura(jLabelCronometro.getText());
         this.listaTempos.add(le);
-    }
+     }
 
     private void limparTabela() {
         ((DefaultTableModel) jTableElementos.getModel()).setNumRows(0);
@@ -149,6 +149,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         this.elemento = eleme.size();
 
         DefaultTableModel model = (DefaultTableModel) jTableElementos.getModel();
+       
         for (int i = 0; i < eleme.size(); i++) {
             model.addColumn(eleme.get(i));
         }
@@ -447,14 +448,6 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
         });
 
         jTableElementos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTableElementos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         jScrollPane3.setViewportView(jTableElementos);
 
         jButtonCancelarTomada.setBackground(new java.awt.Color(255, 153, 51));
@@ -716,7 +709,7 @@ public class PanelTomadaDeTempo extends javax.swing.JPanel {
             String hr = currentHora <= 9 ? "0" + currentHora : currentHora + "";
             String min = currentMinuto <= 9 ? "0" + currentMinuto : currentMinuto + "";
             String seg = currentSegundo <= 9 ? "0" + currentSegundo : currentSegundo + "";
-            String mil = currentMilessimo <= 9 ? "00" + currentMilessimo : currentMilessimo + "";
+            String mil = currentMilessimo <= 9 ? "000" + currentMilessimo : currentMilessimo + "";
             jLabelCronometro.setText(hr + ":" + min + ":" + seg + ":" + mil);
         };
         this.timer = new Timer(velocidade, action);

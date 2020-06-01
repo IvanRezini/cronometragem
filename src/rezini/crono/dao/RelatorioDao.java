@@ -77,12 +77,12 @@ public class RelatorioDao extends ConnectionFactory {
                     tom.setNomeCronometrista(rs.getString("nomeCronometrista"));
                     tom.setCodUsuario(rs.getInt("codUsuario"));
                     tomadas.add(tom);
-                 }
+                }
             }
             st.close();
         }
         this.con.close();
-        
+
         return tomadas;
     }
 
@@ -91,24 +91,50 @@ public class RelatorioDao extends ConnectionFactory {
 
         Leitura leitura = null;
         List<Leitura> leituras = null;
-     
-            try ( PreparedStatement st = this.con.prepareStatement(sql)) {
-                st.setInt(1, cod);
-              try ( ResultSet rs = st.executeQuery()) {
-                    leituras = new ArrayList<Leitura>();
-                    while (rs.next()) {
-                        leitura = new Leitura();
-                        leitura.setCodTomada(rs.getInt("codTomadaTempo"));
-                        leitura.setLeitura(rs.getString("leitura"));
-                        leitura.setSequencia(rs.getInt("sequencia"));
-                        leituras.add(leitura);
-                    }
+
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setInt(1, cod);
+            try ( ResultSet rs = st.executeQuery()) {
+                leituras = new ArrayList<Leitura>();
+                while (rs.next()) {
+                    leitura = new Leitura();
+                    leitura.setCodTomada(rs.getInt("codTomadaTempo"));
+                    leitura.setLeitura(rs.getString("leitura"));
+                    leitura.setSequencia(rs.getInt("sequencia"));
+                    leituras.add(leitura);
                 }
-                st.close();
             }
-        
+            st.close();
+        }
+
         this.con.close();
 
         return leituras;
+    }
+
+    public List<TomadaDeTempo> listaTomadaTempos(int cod) throws SQLException {
+        String sql = "SELECT * FROM rezinicrono.tomadatempo WHERE codOperacao = ?;";
+
+        TomadaDeTempo tempo = null;
+        List<TomadaDeTempo> tomadas = null;
+
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setInt(1, cod);
+            try ( ResultSet rs = st.executeQuery()) {
+                tomadas = new ArrayList<TomadaDeTempo>();
+                while (rs.next()) {
+                    tempo = new TomadaDeTempo();
+                    tempo.setCodTomadaTempo(rs.getInt("codTomadaTempo"));
+                    tempo.setDescTomadaTempo(rs.getString("DescTomadaTempo"));
+                    tempo.setDataTomadaTempo(rs.getString("dataTomadaTempo"));
+                    tomadas.add(tempo);
+                }
+            }
+            st.close();
+        }
+
+        this.con.close();
+
+        return tomadas;
     }
 }

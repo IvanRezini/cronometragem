@@ -7,11 +7,14 @@ package rezini.crono.Utilidades;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import rezini.crono.model.Leitura;
 
 /**
  *
@@ -86,10 +89,16 @@ public class ManipularData {
             date = format.parse(dateFinal);
         } catch (ParseException e) {
             return "Data final inválida. Tente novamente!";
-
         }
-
         return "";
-
     }
+
+    public String dataBancoDeDados(String data) {
+        String[] cod = data.split("/");
+        String date = cod[2] + "-" + cod[1] + "-" + cod[0];
+        return date;
+    }
+
+   
+
 }

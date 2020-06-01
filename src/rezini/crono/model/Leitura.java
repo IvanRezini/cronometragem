@@ -15,7 +15,7 @@ public class Leitura {
     private int sequencia;
     private String leitura;
 
-    public int getCodLeitura() {
+    public int getCodTomada() {
         return codLeitura;
     }
 

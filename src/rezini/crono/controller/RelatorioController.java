@@ -203,6 +203,10 @@ public class RelatorioController {
         tabela.add(this.minimo((ArrayList) tabela));//Menor leitura
         tabela.add(this.maximo((ArrayList) tabela));//Maior leitura
         tabela.add(this.desvioPadrao((ArrayList) tabela));//Desvio padrao
+        tabela.add(this.intervaoConfianca((ArrayList) tabela));//Intervalo de confiança de 95%
+        tabela.add(this.totalQuadrado((ArrayList) tabela));//total ao quadrado
+        tabela.add(this.diferencaDosQuadrados((ArrayList) tabela));//diferença dos total ao quadrado
+          tabela.add(this.raizDaDiferenca((ArrayList) tabela));//raiz quadrada da diferença
         return tabela;
     }
 
@@ -257,120 +261,29 @@ public class RelatorioController {
         for (int p = 2; p < tabela.get(0).size(); p++) {
             String tempo = (String) tabela.get(temp).get(p);
             int nLeituras = Integer.parseInt((String) tabela.get(leitura).get(p));
-            String[] att = tempo.split(":");
-            int milesimo = Integer.parseInt(att[3]);
-            int segundo = Integer.parseInt(att[2]);
-            int minuto = Integer.parseInt(att[1]);
-            int hora = Integer.parseInt(att[0]);
-            long total = (hora * 60 * 60 * 1000) + (minuto * 60 * 1000) + (segundo * 1000) + milesimo;
+            double total = this.converterEmMilesegundos(tempo);
             total = total / nLeituras;
-            hora = (int) (total / 3600000);
-            minuto = (int) (total % 3600000) / 60000;
-            segundo = (int) ((total % 3600000) % 60000) / 1000;
-            milesimo = (int) ((total % 3600000) % 60000) % 1000;
-            String mm = null;
-            if (hora == 0) {
-                mm = "00:";
-            }
-            if (hora < 10) {
-                mm = "0" + hora + ":";
-            }
-            if (hora > 9) {
-                mm = hora + ":";
-            }
-            if (minuto < 10) {
-                mm += "0" + minuto + ":";
-            }
-            if (minuto > 9) {
-                mm += minuto + ":";
-            }
-            if (segundo < 10) {
-                mm += "0" + segundo + ":";
-            }
-            if (segundo > 9) {
-                mm += segundo + ":";
-            }
-            if (milesimo < 10) {
-                mm += "00" + milesimo;
-            }
-            if (milesimo < 100 && milesimo > 9) {
-                mm += "0" + milesimo;
-            }
-            if (milesimo > 99) {
-                mm += milesimo;
-            }
-            media.add(mm);
+            media.add(this.converterEmHora(total));
         }
         return media;
     }
 
-    //prolema no tempo ao quadrado
     public List somarAoQuadrado(ArrayList table) throws ParseException {
-        GregorianCalendar gc = new GregorianCalendar();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SSS");
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
         List<String> totalQ = new ArrayList<>();
         totalQ.add("");
-        totalQ.add("Tempo T²");
+        totalQ.add("Tempo T² somados:");
         String tempo;
         for (int i = 2; i < tabela.get(0).size(); i++) {
-            gc.setTime(sdf.parse("00:00:00:000"));
-            String mm = null;
             int leituras = tabela.size() - 3;
-            int milesimo;
-            int segundo;
-            int minuto;
-            int hora;
-            long soma = 0;
+            double soma = 0;
             for (int p = 0; p < leituras; p++) {
                 tempo = (String) tabela.get(p).get(i);
-                String[] att = tempo.split(":");
-                milesimo = Integer.parseInt(att[3]);
-                segundo = Integer.parseInt(att[2]);
-                minuto = Integer.parseInt(att[1]);
-                hora = Integer.parseInt(att[0]);
-                // System.out.println("Hora: " + hora + " minuto " + minuto + "  segundo  " + segundo + " mil  " + milesimo);
-                long total = (hora * 60 * 60 * 1000) + (minuto * 60 * 1000) + (segundo * 1000) + milesimo;
-                // System.out.println("Soma: " + soma + "   Total: " + total + "    contador:  " + p);
+                double total = this.converterEmMilesegundos(tempo);
                 soma = soma + (total * total);
-
             }
-            hora = (int) (soma / 3600000);
-            minuto = (int) (soma % 3600000) / 60000;
-            segundo = (int) ((soma % 3600000) % 60000) / 1000;
-            milesimo = (int) ((soma % 3600000) % 60000) % 1000;
-            if (hora == 0) {
-                mm = "00:";
-            }
-            if (hora < 10) {
-                mm = "0" + hora + ":";
-            }
-            if (hora > 9) {
-                mm = hora + ":";
-            }
-            if (minuto < 10) {
-                mm += "0" + minuto + ":";
-            }
-            if (minuto > 9) {
-                mm += minuto + ":";
-            }
-            if (segundo < 10) {
-                mm += "0" + segundo + ":";
-            }
-            if (segundo > 9) {
-                mm += segundo + ":";
-            }
-            if (milesimo < 10) {
-                mm += "00" + milesimo;
-            }
-            if (milesimo < 100 && milesimo > 9) {
-                mm += "0" + milesimo;
-            }
-            if (milesimo > 99) {
-                mm += milesimo;
-            }
-            totalQ.add(mm);
+            totalQ.add(this.converterEmHora(soma));
         }
         return totalQ;
     }
@@ -449,30 +362,17 @@ public class RelatorioController {
         int med = tabela.size() - 4;//linha da media
         int nLei = tabela.size() - 5;//numero de leituras
         for (int i = 2; i < tabela.get(0).size(); i++) {
-            float result = 0000;
-            int milesimo;
-            int segundo;
-            int minuto;
-            int hora;
-            long nLeituras = Long.parseLong((String) tabela.get(nLei).get(i));
+            double result = 0;
+
+            int nLeituras = Integer.parseInt((String) tabela.get(nLei).get(i));
             String media = (String) tabela.get(med).get(i);
-            String[] attM = media.split(":");
-            milesimo = Integer.parseInt(attM[3]);
-            segundo = Integer.parseInt(attM[2]);
-            minuto = Integer.parseInt(attM[1]);
-            hora = Integer.parseInt(attM[0]);
-            long totalM = (hora * 60 * 60 * 1000) + (minuto * 60 * 1000) + (segundo * 1000) + milesimo;
+            double totalM = this.converterEmMilesegundos(media);
             for (int p = 0; p < leituras; p++) {
                 String tempo = (String) tabela.get(p).get(i);
-                String[] att = tempo.split(":");
-                milesimo = Integer.parseInt(att[3]);
-                segundo = Integer.parseInt(att[2]);
-                minuto = Integer.parseInt(att[1]);
-                hora = Integer.parseInt(att[0]);
-                long total = (hora * 60 * 60 * 1000) + (minuto * 60 * 1000) + (segundo * 1000) + milesimo;
+                double total = this.converterEmMilesegundos(tempo);
                 result += Math.pow((total - totalM), 2);
             }
-            result = (float) Math.sqrt(result / nLeituras);
+            result = (double) Math.sqrt(result / nLeituras);
             DecimalFormat df = new DecimalFormat("0.000");
             String mm = df.format(result) + "";
             desvio.add(mm);
@@ -480,5 +380,131 @@ public class RelatorioController {
         return desvio;
     }
 
+    public List intervaoConfianca(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Int. conf. ±");
+        float nivelCofianca = (float) 1.96;// indice de confiança de 95% ja convertido
+        int desvio = tabela.size() - 1;//linha do desvio padrao
+        int nLei = tabela.size() - 6;//linha do numero de leituras
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            String des = (String) tabela.get(desvio).get(i);
+            String[] attM = des.split(",");
+            des = attM[0] + "." + attM[1];
+            double desvioPadrao = Double.valueOf(des);
+            int leituras = Integer.parseInt((String) tabela.get(nLei).get(i));
+            long result = (long) (nivelCofianca * (desvioPadrao / (Math.sqrt(leituras))));
+            total.add("" + result);
+        }
+        return total;
+    }
+
+    public List totalQuadrado(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Total ao quadrado:");
+        int tota = tabela.size() - 8;//linha do soma das medidas
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            String tempo = (String) tabela.get(tota).get(i);
+
+            double tot = this.converterEmMilesegundos(tempo);
+            tot = Math.pow(tot, 2);
+            total.add(this.converterEmHora(tot));
+        }
+        return total;
+    }
+
+    public List diferencaDosQuadrados(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("S²*A-T²:");
+        int medidas = tabela.size() - 8;//linha do numero de medidas
+        int somaQua = tabela.size() - 6;//linha da soma das medidas ao quadrado
+        int totalQua = tabela.size() - 1;//linha do total ao quadrado
+
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            int medi = Integer.parseInt((String) tabela.get(medidas).get(i));
+            String somaQ = (String) tabela.get(somaQua).get(i);
+            String totalQ = (String) tabela.get(totalQua).get(i);
+            double somaQu = this.converterEmMilesegundos(somaQ);
+            double totalQu = this.converterEmMilesegundos(totalQ);
+            double tot = (somaQu * medi) - totalQu;
+            total.add("" + tot);
+        }
+        return total;
+    }
+    
+     public List raizDaDiferenca(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Raiz diferença:");
+       int linhaDif = tabela.size() - 1;//linha da diferença
+
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double medi = Double.parseDouble((String) tabela.get(linhaDif).get(i));
+           
+            double tot = Math.sqrt(medi);
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public double converterEmMilesegundos(String tempo) throws ParseException {
+        String[] att = tempo.split(":");
+        int milesimo = Integer.parseInt(att[3]);
+        int segundo = Integer.parseInt(att[2]);
+        int minuto = Integer.parseInt(att[1]);
+        int hora = Integer.parseInt(att[0]);
+        double total = (hora * 60 * 60 * 1000) + (minuto * 60 * 1000) + (segundo * 1000) + milesimo;
+        return total;
+    }
+
+    public String converterEmHora(double total) throws ParseException {
+        int hora = (int) (total / 3600000);
+        int minuto = (int) (total % 3600000) / 60000;
+        int segundo = (int) ((total % 3600000) % 60000) / 1000;
+        int milesimo = (int) ((total % 3600000) % 60000) % 1000;
+        String tempo = null;
+        if (hora == 0) {
+            tempo = "00:";
+        }
+        if (hora < 10) {
+            tempo = "0" + hora + ":";
+        }
+        if (hora > 9) {
+            tempo = hora + ":";
+        }
+        if (minuto < 10) {
+            tempo += "0" + minuto + ":";
+        }
+        if (minuto > 9) {
+            tempo += minuto + ":";
+        }
+        if (segundo < 10) {
+            tempo += "0" + segundo + ":";
+        }
+        if (segundo > 9) {
+            tempo += segundo + ":";
+        }
+        if (milesimo < 10) {
+            tempo += "00" + milesimo;
+        }
+        if (milesimo < 100 && milesimo > 9) {
+            tempo += "0" + milesimo;
+        }
+        if (milesimo > 99) {
+            tempo += milesimo;
+        }
+        return tempo;
+    }
 }
 //https://www.proenem.com.br/enem/fisica/estatistica-desvio-medio-desvio-padrao-e-variancia/
+//https://pt.wikihow.com/Calcular-o-Intervalo-de-Confian%C3%A7a

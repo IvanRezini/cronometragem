@@ -10,9 +10,7 @@ import java.awt.event.ItemEvent;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -20,10 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import rezini.crono.Utilidades.ManipularData;
 import rezini.crono.controller.RelatorioController;
 import rezini.crono.dao.ElementosDao;
-import rezini.crono.dao.RelatorioDao;
 import rezini.crono.model.Elementos;
-import rezini.crono.model.Leitura;
-import rezini.crono.model.TomadaDeTempo;
 
 /**
  *

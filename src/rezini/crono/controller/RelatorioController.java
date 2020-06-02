@@ -20,6 +20,7 @@ import javax.swing.text.MaskFormatter;
 import rezini.crono.Utilidades.ManipularData;
 import rezini.crono.dao.ProdutoDao;
 import rezini.crono.dao.RelatorioDao;
+import rezini.crono.model.Elementos;
 import rezini.crono.model.Leitura;
 import rezini.crono.model.Operacao;
 import rezini.crono.model.Produto;
@@ -126,7 +127,7 @@ public class RelatorioController {
     /*
     recebe os parametros para montar o relatorio que sera exibido na tabela
      */
-    public List tabela(String dataInicial, String dataFinal, String codOperacao, String codTomadaTempo) throws ParseException {
+    public List tabela(String dataInicial, String dataFinal, String codOperacao, String codTomadaTempo) throws ParseException, SQLException {
         List<Object> tabela = new ArrayList<>();
         List<String> linha = new ArrayList<>();
         List<TomadaDeTempo> listaTomada = null;
@@ -206,7 +207,13 @@ public class RelatorioController {
         tabela.add(this.intervaoConfianca((ArrayList) tabela));//Intervalo de confiança de 95%
         tabela.add(this.totalQuadrado((ArrayList) tabela));//total ao quadrado
         tabela.add(this.diferencaDosQuadrados((ArrayList) tabela));//diferença dos total ao quadrado
-          tabela.add(this.raizDaDiferenca((ArrayList) tabela));//raiz quadrada da diferença
+        tabela.add(this.raizDaDiferenca((ArrayList) tabela));//raiz quadrada da diferença
+        tabela.add(this.raizVezDez((ArrayList) tabela));//raiz vezes dez
+        tabela.add(this.raizVezDezDivididoTotal((ArrayList) tabela)); //raizVezDezDivididoTotal
+        tabela.add(this.nObsNes((ArrayList) tabela));//numero de observaçoes nessesarias
+        tabela.add(this.ritmo((ArrayList) tabela));//ritmo do elemento
+         tabela.add(this.tempoNormal((ArrayList) tabela));//Tempo normal
+
         return tabela;
     }
 
@@ -254,16 +261,16 @@ public class RelatorioController {
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
         List<String> media = new ArrayList<>();
-        media.add("");
+        media.add("Minutos centecimal");
         media.add("Media:");
         int temp = tabela.size() - 2;
         int leitura = tabela.size() - 1;
         for (int p = 2; p < tabela.get(0).size(); p++) {
             String tempo = (String) tabela.get(temp).get(p);
             int nLeituras = Integer.parseInt((String) tabela.get(leitura).get(p));
-            double total = this.converterEmMilesegundos(tempo);
+            double total = this.converterEmMinutoCentecimal(tempo);
             total = total / nLeituras;
-            media.add(this.converterEmHora(total));
+            media.add("" + total);
         }
         return media;
     }
@@ -272,7 +279,7 @@ public class RelatorioController {
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
         List<String> totalQ = new ArrayList<>();
-        totalQ.add("");
+        totalQ.add("Minutos centecimal");
         totalQ.add("Tempo T² somados:");
         String tempo;
         for (int i = 2; i < tabela.get(0).size(); i++) {
@@ -280,10 +287,10 @@ public class RelatorioController {
             double soma = 0;
             for (int p = 0; p < leituras; p++) {
                 tempo = (String) tabela.get(p).get(i);
-                double total = this.converterEmMilesegundos(tempo);
+                double total = this.converterEmMinutoCentecimal(tempo);
                 soma = soma + (total * total);
             }
-            totalQ.add(this.converterEmHora(soma));
+            totalQ.add("" + soma);
         }
         return totalQ;
     }
@@ -366,10 +373,10 @@ public class RelatorioController {
 
             int nLeituras = Integer.parseInt((String) tabela.get(nLei).get(i));
             String media = (String) tabela.get(med).get(i);
-            double totalM = this.converterEmMilesegundos(media);
+            double totalM = Double.parseDouble(media);
             for (int p = 0; p < leituras; p++) {
                 String tempo = (String) tabela.get(p).get(i);
-                double total = this.converterEmMilesegundos(tempo);
+                double total = this.converterEmMinutoCentecimal(tempo);
                 result += Math.pow((total - totalM), 2);
             }
             result = (double) Math.sqrt(result / nLeituras);
@@ -405,15 +412,15 @@ public class RelatorioController {
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
         List<String> total = new ArrayList<>();
-        total.add("");
+        total.add("Minuto centecimal.");
         total.add("Total ao quadrado:");
         int tota = tabela.size() - 8;//linha do soma das medidas
         for (int i = 2; i < tabela.get(0).size(); i++) {
             String tempo = (String) tabela.get(tota).get(i);
 
-            double tot = this.converterEmMilesegundos(tempo);
+            double tot = this.converterEmMinutoCentecimal(tempo);
             tot = Math.pow(tot, 2);
-            total.add(this.converterEmHora(tot));
+            total.add("" + tot);
         }
         return total;
     }
@@ -423,7 +430,7 @@ public class RelatorioController {
         tabela = (ArrayList) table;
         List<String> total = new ArrayList<>();
         total.add("");
-        total.add("S²*A-T²:");
+        total.add("S² x A - T²:");
         int medidas = tabela.size() - 8;//linha do numero de medidas
         int somaQua = tabela.size() - 6;//linha da soma das medidas ao quadrado
         int totalQua = tabela.size() - 1;//linha do total ao quadrado
@@ -432,38 +439,129 @@ public class RelatorioController {
             int medi = Integer.parseInt((String) tabela.get(medidas).get(i));
             String somaQ = (String) tabela.get(somaQua).get(i);
             String totalQ = (String) tabela.get(totalQua).get(i);
-            double somaQu = this.converterEmMilesegundos(somaQ);
-            double totalQu = this.converterEmMilesegundos(totalQ);
+            double somaQu = Double.parseDouble(somaQ);
+            double totalQu = Double.parseDouble(totalQ);
             double tot = (somaQu * medi) - totalQu;
             total.add("" + tot);
         }
         return total;
     }
-    
-     public List raizDaDiferenca(ArrayList table) throws ParseException {
+
+    public List raizDaDiferenca(ArrayList table) throws ParseException {
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
         List<String> total = new ArrayList<>();
         total.add("");
         total.add("Raiz diferença:");
-       int linhaDif = tabela.size() - 1;//linha da diferença
+        int linhaDif = tabela.size() - 1;//linha da diferença
 
         for (int i = 2; i < tabela.get(0).size(); i++) {
             double medi = Double.parseDouble((String) tabela.get(linhaDif).get(i));
-           
+
             double tot = Math.sqrt(medi);
             total.add("" + tot);
         }
         return total;
     }
 
-    public double converterEmMilesegundos(String tempo) throws ParseException {
+    public List raizVezDez(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Raiz veses 10:");
+        int linhaRaiz = tabela.size() - 1;//linha da diferença
+
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double medi = Double.parseDouble((String) tabela.get(linhaRaiz).get(i));
+
+            double tot = medi * 10;
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public List raizVezDezDivididoTotal(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Raiz veses 10/total:");
+        int linhaRaiz = tabela.size() - 1;//linha da diferença
+        int linhaTotal = tabela.size() - 12;
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double medi = Double.parseDouble((String) tabela.get(linhaRaiz).get(i));
+            String soma = (String) tabela.get(linhaTotal).get(i);
+            double miles = this.converterEmMinutoCentecimal(soma);
+            double tot = medi / miles;
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public List nObsNes(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("n° obs. nes. :");
+        int linhaRaiz = tabela.size() - 1;//
+
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double medi = Double.parseDouble((String) tabela.get(linhaRaiz).get(i));
+
+            int tot = (int) Math.pow(medi, 2);
+            if (tot == 0) {
+                tot = 1;
+            }
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public List ritmo(ArrayList table) throws ParseException, SQLException {
+        RelatorioDao relatorio = new RelatorioDao();
+        List<Elementos> elementos;
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Ritmo %:");
+        int codTomadaTempo = Integer.parseInt((String) tabela.get(0).get(0));
+        elementos = relatorio.atributosElementos(codTomadaTempo);
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            Elementos ele = elementos.get(i - 2);
+            total.add("" + ele.getRitmoElemento());
+        }
+        return total;
+    }
+     
+    public List tempoNormal(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("Minutos centecimal.");
+        total.add("Tempo Normal:");
+        int linhaRitimo = tabela.size() - 1;//
+  int linhaTempoTotal = tabela.size() - 15;//
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double ritimo = Double.parseDouble((String) tabela.get(linhaRitimo).get(i));
+            double tempoTotal = this.converterEmMinutoCentecimal((String) tabela.get(linhaTempoTotal).get(i));
+            double tot = (tempoTotal/ritimo)*100;
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+
+    public double converterEmMinutoCentecimal(String tempo) throws ParseException {
         String[] att = tempo.split(":");
         int milesimo = Integer.parseInt(att[3]);
         int segundo = Integer.parseInt(att[2]);
         int minuto = Integer.parseInt(att[1]);
         int hora = Integer.parseInt(att[0]);
         double total = (hora * 60 * 60 * 1000) + (minuto * 60 * 1000) + (segundo * 1000) + milesimo;
+        total = (total / 1000) / 60;
         return total;
     }
 

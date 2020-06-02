@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import rezini.crono.model.Elementos;
 import rezini.crono.model.Leitura;
 import rezini.crono.model.Operacao;
 import rezini.crono.model.TomadaDeTempo;
@@ -136,5 +137,30 @@ public class RelatorioDao extends ConnectionFactory {
         this.con.close();
 
         return tomadas;
+    }
+
+    public List<Elementos> atributosElementos(int cod) throws SQLException {
+        String sql = "SELECT * FROM elemento where codOperacao = "
+                + "(SELECT codOperacao FROM tomadatempo where codTomadaTempo = ?);";
+        Elementos ele = null;
+        List<Elementos> elementos = null;
+        try ( PreparedStatement st = this.con.prepareStatement(sql)) {
+            st.setInt(1, cod);
+            try ( ResultSet rs = st.executeQuery()) {
+                elementos = new ArrayList<Elementos>();
+                while (rs.next()) {
+                    ele=new Elementos();
+                    ele.setConcessaoElemento(rs.getFloat("concessaoElemento"));
+                    ele.setInterferenciaElemento(rs.getFloat("interferenciaElemento"));
+                    ele.setRitmoElemento(rs.getFloat("ritmoElemento"));
+                    ele.setTotalDePecas(rs.getInt("totalDePecas"));
+                    elementos.add(ele);
+                }
+            }
+            st.close();
+        }
+        this.con.close();
+        return elementos;
+
     }
 }

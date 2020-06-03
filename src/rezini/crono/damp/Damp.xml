@@ -1,0 +1,123 @@
+
+    -- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema rezinicrono
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema rezinicrono
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `rezinicrono` DEFAULT CHARACTER SET utf8 ;
+USE `rezinicrono` ;
+
+-- -----------------------------------------------------
+-- Table `rezinicrono`.`elemento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rezinicrono`.`elemento` (
+  `nomeElemento` TEXT NULL DEFAULT NULL,
+  `ritmoElemento` FLOAT NULL DEFAULT NULL,
+  `interferenciaElemento` FLOAT NULL DEFAULT NULL,
+  `concessaoElemento` FLOAT NULL DEFAULT NULL,
+  `totalDePecas` INT(11) NULL DEFAULT NULL,
+  `codOperacao` INT(11) NULL DEFAULT NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `rezinicrono`.`leiturastempo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rezinicrono`.`leiturastempo` (
+  `codTomadaTempo` INT(11) NOT NULL,
+  `leitura` VARCHAR(15) NOT NULL,
+  `sequencia` INT(11) NULL DEFAULT NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `rezinicrono`.`operacao`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rezinicrono`.`operacao` (
+  `codOperacao` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nomeOperacao` VARCHAR(60) NULL DEFAULT NULL,
+  `descOperacao` TEXT NOT NULL,
+  `createOperacao` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `codProduto` INT(10) UNSIGNED NOT NULL,
+  `statusOperacao` INT(11) NOT NULL,
+  PRIMARY KEY (`codOperacao`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `rezinicrono`.`produto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rezinicrono`.`produto` (
+  `codProduto` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nomeProduto` VARCHAR(60) NULL DEFAULT NULL,
+  `descProduto` TEXT NOT NULL,
+  `createProduto` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`codProduto`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `rezinicrono`.`tomadatempo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rezinicrono`.`tomadatempo` (
+  `codTomadaTempo` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dataTomadaTempo` DATETIME NULL DEFAULT NULL,
+  `codUsuario` INT(11) NULL DEFAULT NULL,
+  `DescTomadaTempo` TEXT NULL DEFAULT NULL,
+  `codOperacao` INT(11) NOT NULL,
+  `nomeCronometrista` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`codTomadaTempo`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `rezinicrono`.`usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rezinicrono`.`usuario` (
+  `codCol` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nomCol` VARCHAR(60) NULL DEFAULT NULL,
+  `baiCol` VARCHAR(60) NULL DEFAULT NULL,
+  `ruaCol` VARCHAR(60) NULL DEFAULT NULL,
+  `cidCol` VARCHAR(60) NULL DEFAULT NULL,
+  `usuCol` VARCHAR(60) NULL DEFAULT NULL,
+  `senCol` VARCHAR(60) NULL DEFAULT NULL,
+  `emaCol` VARCHAR(60) NULL DEFAULT NULL,
+  `utiCol` VARCHAR(60) NULL DEFAULT NULL,
+  `datCol` VARCHAR(60) NULL DEFAULT NULL,
+  `numCol` INT(11) NULL DEFAULT NULL,
+  `cepCol` INT(11) NULL DEFAULT NULL,
+  `celCol` INT(11) NULL DEFAULT NULL,
+  `dddCol` INT(11) NULL DEFAULT NULL,
+  `tipCol` INT(11) NULL DEFAULT NULL,
+  `estCol` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`codCol`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+### pode ser nesseario rodar o Set time
+SET @@global.time_zone = '+3:00';

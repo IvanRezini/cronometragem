@@ -410,8 +410,10 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
     private void jButtonMaisElementoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMaisElementoMouseClicked
         if (validarCampos()) {
             int cod = Integer.parseInt(jLabelInsertCodigoOperacao.getText());
-            int repeticao = Integer.parseInt(jFormattedTextInserConcessao.getText());
             int totalPecas = Integer.parseInt(jFormattedTextInsertTotalPecas.getText());
+            String conc = jFormattedTextInserConcessao.getText();
+            conc = conc.replaceAll(",", ".");
+            float concessao = Float.parseFloat(conc);
             String rit = jFormattedTextInsertRitmo.getText();
             rit = rit.replaceAll(",", ".");
             float ritmo = Float.parseFloat(rit);
@@ -422,7 +424,7 @@ public class PanelCadastroElemento extends javax.swing.JPanel {
             Elementos el = new Elementos();
             el.setNomeElemento(jTextInsertNome.getText());
             el.setRitmoElemento(ritmo);
-            el.setConcessaoElemento(repeticao);
+            el.setConcessaoElemento(concessao);
             el.setInterferenciaElemento(interferencia);
             el.setTotalDePecas(totalPecas);
             el.setCodOperacao(cod);

@@ -204,7 +204,7 @@ public class RelatorioController {
         tabela.add(this.minimo((ArrayList) tabela));//Menor leitura
         tabela.add(this.maximo((ArrayList) tabela));//Maior leitura
         tabela.add(this.desvioPadrao((ArrayList) tabela));//Desvio padrao
-        tabela.add(this.intervaoConfianca((ArrayList) tabela));//Intervalo de confiança de 95%
+        tabela.add(this.intervaloConfianca((ArrayList) tabela));//Intervalo de confiança de 95%
         tabela.add(this.totalQuadrado((ArrayList) tabela));//total ao quadrado
         tabela.add(this.diferencaDosQuadrados((ArrayList) tabela));//diferença dos total ao quadrado
         tabela.add(this.raizDaDiferenca((ArrayList) tabela));//raiz quadrada da diferença
@@ -212,8 +212,18 @@ public class RelatorioController {
         tabela.add(this.raizVezDezDivididoTotal((ArrayList) tabela)); //raizVezDezDivididoTotal
         tabela.add(this.nObsNes((ArrayList) tabela));//numero de observaçoes nessesarias
         tabela.add(this.ritmo((ArrayList) tabela));//ritmo do elemento
-         tabela.add(this.tempoNormal((ArrayList) tabela));//Tempo normal
-
+        tabela.add(this.tempoNormal((ArrayList) tabela));//Tempo normal
+        tabela.add(this.quVezes((ArrayList) tabela));//Automatico em uma vez
+        tabela.add(this.porPc((ArrayList) tabela));//quantas eses na mesma peça
+        tabela.add(this.tempoAjustado((ArrayList) tabela));//Tempo ajustado
+        tabela.add(this.interferencia((ArrayList) tabela));//Interferencia
+        tabela.add(this.tempoBase((ArrayList) tabela));//Tempo base
+        tabela.add(this.concessoes((ArrayList) tabela));//concessoes
+        tabela.add(this.tempoPadrao((ArrayList) tabela));//Tempo padrao 
+        tabela.add(this.tempoPadraoOperacaoMi((ArrayList) tabela));//Tempo padrao da operação 
+        tabela.add(this.tempoPadraoOperacaoNor((ArrayList) tabela));//Tempo padrão de operação em horas
+        tabela.add(this.producaoHora((ArrayList) tabela));//produção por hora
+        tabela.add(this.producaoDia((ArrayList) tabela));//produçã por dia 8 Horas
         return tabela;
     }
 
@@ -380,14 +390,14 @@ public class RelatorioController {
                 result += Math.pow((total - totalM), 2);
             }
             result = (double) Math.sqrt(result / nLeituras);
-            DecimalFormat df = new DecimalFormat("0.000");
+            DecimalFormat df = new DecimalFormat("0.0000");
             String mm = df.format(result) + "";
             desvio.add(mm);
         }
         return desvio;
     }
 
-    public List intervaoConfianca(ArrayList table) throws ParseException {
+    public List intervaloConfianca(ArrayList table) throws ParseException {
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
         List<String> total = new ArrayList<>();
@@ -402,8 +412,9 @@ public class RelatorioController {
             des = attM[0] + "." + attM[1];
             double desvioPadrao = Double.valueOf(des);
             int leituras = Integer.parseInt((String) tabela.get(nLei).get(i));
-            long result = (long) (nivelCofianca * (desvioPadrao / (Math.sqrt(leituras))));
-            total.add("" + result);
+            DecimalFormat df = new DecimalFormat("0.0000");
+            String mm = df.format((nivelCofianca * (desvioPadrao / (Math.sqrt(leituras)))));
+            total.add(mm);
         }
         return total;
     }
@@ -535,7 +546,7 @@ public class RelatorioController {
         }
         return total;
     }
-     
+
     public List tempoNormal(ArrayList table) throws ParseException {
         ArrayList<List> tabela;
         tabela = (ArrayList) table;
@@ -543,16 +554,201 @@ public class RelatorioController {
         total.add("Minutos centecimal.");
         total.add("Tempo Normal:");
         int linhaRitimo = tabela.size() - 1;//
-  int linhaTempoTotal = tabela.size() - 15;//
+        int linhaTempoTotal = tabela.size() - 15;//
         for (int i = 2; i < tabela.get(0).size(); i++) {
             double ritimo = Double.parseDouble((String) tabela.get(linhaRitimo).get(i));
             double tempoTotal = this.converterEmMinutoCentecimal((String) tabela.get(linhaTempoTotal).get(i));
-            double tot = (tempoTotal/ritimo)*100;
+            double tot = (tempoTotal / ritimo) * 100;
             total.add("" + tot);
         }
         return total;
     }
 
+    public List quVezes(ArrayList table) throws ParseException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Quantas vezes:");
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            total.add("1");
+        }
+        return total;
+    }
+
+    public List porPc(ArrayList table) throws ParseException, SQLException {
+        RelatorioDao relatorio = new RelatorioDao();
+        List<Elementos> elementos;
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Por peça:");
+        int codTomadaTempo = Integer.parseInt((String) tabela.get(0).get(0));
+        elementos = relatorio.atributosElementos(codTomadaTempo);
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            Elementos ele = elementos.get(i - 2);
+            total.add("" + ele.getTotalDePecas());
+        }
+        return total;
+    }
+
+    public List tempoAjustado(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("Minutos centecimal.");
+        total.add("Tempo Ajustado:");
+        int linhaPorPc = tabela.size() - 1;//linha da diferença
+        int linhaQuVez = tabela.size() - 2;//Linha de quantas vezes
+        int linhaTempoNor = tabela.size() - 3;//Linha de tempo Normal
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double porPc = Double.parseDouble((String) tabela.get(linhaPorPc).get(i));
+            double quVez = Double.parseDouble((String) tabela.get(linhaQuVez).get(i));
+            double tempoNor = Double.parseDouble((String) tabela.get(linhaTempoNor).get(i));
+            double tot = (tempoNor * quVez) / porPc;
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public List interferencia(ArrayList table) throws ParseException, SQLException {
+        RelatorioDao relatorio = new RelatorioDao();
+        List<Elementos> elementos;
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Interferencia:");
+        int codTomadaTempo = Integer.parseInt((String) tabela.get(0).get(0));
+        elementos = relatorio.atributosElementos(codTomadaTempo);
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            Elementos ele = elementos.get(i - 2);
+            total.add("" + ele.getInterferenciaElemento());
+        }
+        return total;
+    }
+
+    public List tempoBase(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("Minutos centecimal.");
+        total.add("Tempo base:");
+        int linhaInter = tabela.size() - 1;//linha da Interferencia
+        int linhaTemAju = tabela.size() - 2;//Linha de Tempo ajustado
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double interferencia = Double.parseDouble((String) tabela.get(linhaInter).get(i));
+            double tempoAjus = Double.parseDouble((String) tabela.get(linhaTemAju).get(i));
+            double tot = ((tempoAjus * interferencia) / 100) + tempoAjus;
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public List concessoes(ArrayList table) throws ParseException, SQLException {
+        RelatorioDao relatorio = new RelatorioDao();
+        List<Elementos> elementos;
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Concessoes:");
+        int codTomadaTempo = Integer.parseInt((String) tabela.get(0).get(0));
+        elementos = relatorio.atributosElementos(codTomadaTempo);
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            Elementos ele = elementos.get(i - 2);
+            total.add("" + ele.getConcessaoElemento());
+        }
+        return total;
+    }
+
+    public List tempoPadrao(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("Minutos centecimal.");
+        total.add("Tempo padrao:");
+        int linhaConc = tabela.size() - 1;//linha da concessoes
+        int linhaTemBas = tabela.size() - 2;//Linha de Tempo base
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double concessoes = Double.parseDouble((String) tabela.get(linhaConc).get(i));
+            double tempoBase = Double.parseDouble((String) tabela.get(linhaTemBas).get(i));
+            double tot = ((tempoBase * concessoes) / 100) + tempoBase;
+            total.add("" + tot);
+        }
+        return total;
+    }
+
+    public List tempoPadraoOperacaoMi(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("Minutos centecimal.");
+        total.add("Tempo padrao operação:");
+        int linhaTemPad = tabela.size() - 1;//linha do Tempo Padrao
+        double tot = 0;
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double concessoes = Double.parseDouble((String) tabela.get(linhaTemPad).get(i));
+            tot += concessoes;
+            total.add("");
+        }
+        total.remove(2);
+        total.add(2, "" + tot);
+        return total;
+    }
+
+    public List tempoPadraoOperacaoNor(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Tempo padrao operação:");
+        int linhaTemPad = tabela.size() - 2;//linha do Tempo Padrao
+        double tot = 0;
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            double concessoes = Double.parseDouble((String) tabela.get(linhaTemPad).get(i));
+            tot += concessoes;
+            total.add("");
+        }
+        total.remove(2);
+        total.add(2, this.converterEmHora(tot));
+        return total;
+    }
+
+    public List producaoHora(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("");
+        total.add("Produção por Hora:");
+        int linhaTemPad = tabela.size() - 2;//linha do Tempo Padrao operaão
+        double tot = 0;
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            total.add("");
+        }
+        double proHor = Double.parseDouble((String) tabela.get(linhaTemPad).get(2));
+        total.remove(2);
+        total.add(2, "" + (60 / proHor));
+        return total;
+    }
+
+    public List producaoDia(ArrayList table) throws ParseException, SQLException {
+        ArrayList<List> tabela;
+        tabela = (ArrayList) table;
+        List<String> total = new ArrayList<>();
+        total.add("8 Horas");
+        total.add("Produção por dia:");
+        int linhaHor = tabela.size() - 1;//linha produção por hora
+        double tot = 0;
+        for (int i = 2; i < tabela.get(0).size(); i++) {
+            total.add("");
+        }
+        double proDia = Double.parseDouble((String) tabela.get(linhaHor).get(2));
+        total.remove(2);
+        total.add(2, "" + (proDia * 8));
+        return total;
+    }
 
     public double converterEmMinutoCentecimal(String tempo) throws ParseException {
         String[] att = tempo.split(":");
@@ -566,6 +762,7 @@ public class RelatorioController {
     }
 
     public String converterEmHora(double total) throws ParseException {
+        total = total * 60 * 1000;
         int hora = (int) (total / 3600000);
         int minuto = (int) (total % 3600000) / 60000;
         int segundo = (int) ((total % 3600000) % 60000) / 1000;

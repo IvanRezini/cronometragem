@@ -119,5 +119,15 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+###Insere um colaborador para dar asseso
+
+INSERT INTO `rezinicrono`.`usuario` (`nomCol`, `baiCol`, `ruaCol`, `cidCol`, `usuCol`, `senCol`,
+ `emaCol`, `datCol`, `numCol`, `cepCol`, `celCol`, `dddCol`, `tipCol`, `estCol`) 
+ VALUES ('Maria', 'Americana', 'Rua das cabras', 'São Paulo', 'maria', 
+ md5('abc123.'), 'Maria@maria', '1900-01-01', '5', '85858585', '999654888', '98', '1', '1');
+ 
+ ###Usuario: "maria"
+ ###Senha: "abc123."
+
 ### pode ser nesseario rodar o Set time
 SET @@global.time_zone = '+3:00';

@@ -495,7 +495,7 @@ private void autenticarPaineis() {
                 JOptionPane.showMessageDialog(null, "AUTENTICADO COM SUCESSO");
 
                 gd.criarPastaColaborador();
-                gd.salvarLog(this.usuario, false);
+                gd.salvarLog(this.usuario, false);//salva apenas o dia que ele logou 
                 this.autenticarPaineis();
                 this.cl.show(jPanelPrincipal, "telaPadrao");
 

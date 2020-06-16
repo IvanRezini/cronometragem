@@ -61,7 +61,6 @@ public class GerenciaDeDados {
     }
 
     public static void salvarLog(Usuario cadastroColaborador, boolean sobreescrever) throws IOException {
-        //Varrer o array
         String conteudoCsv = "";
         String linha = "";
        

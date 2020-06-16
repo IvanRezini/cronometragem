@@ -6,11 +6,17 @@
 package rezini.crono;
 
 import java.awt.CardLayout;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import rezini.crono.Utilidades.GerenciaDeDados;
+import rezini.crono.Utilidades.ManipularData;
+import rezini.crono.dao.UsuarioDao;
+import rezini.crono.model.Usuario;
 import rezini.crono.views.elementos.PanelCadastroElemento;
 import rezini.crono.views.elementos.PanelListaDeElemento;
 import rezini.crono.views.operacao.PanelCadastroOperacao;
@@ -28,9 +34,8 @@ import rezini.crono.views.usuario.PanelListaDeUsuarios;
  */
 public class cronoFrame extends javax.swing.JFrame {
 
-    private int codigoUsuario = 5060;
     private CardLayout cl;
-
+    public Usuario usuario;
     public List<Object> usu = new ArrayList<>();
 
     /**
@@ -38,6 +43,7 @@ public class cronoFrame extends javax.swing.JFrame {
      */
     public cronoFrame() {
         initComponents();
+        baraMenuSuperior.setVisible(false);
         this.cl = (CardLayout) jPanelPrincipal.getLayout();
         jPanelPrincipal.add(jPanelPadrao, "padrao");
         this.cl.show(jPanelPrincipal, "padrao");
@@ -62,7 +68,7 @@ public class cronoFrame extends javax.swing.JFrame {
         cpSenha = new javax.swing.JPasswordField();
         jLabelInsertUsuario = new javax.swing.JLabel();
         jLabelInsertCodigoUsuario = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelData = new javax.swing.JLabel();
         jLabelInsertData = new javax.swing.JLabel();
         baraMenuSuperior = new javax.swing.JMenuBar();
         jMenuInicio = new javax.swing.JMenu();
@@ -220,7 +226,7 @@ public class cronoFrame extends javax.swing.JFrame {
 
         jLabelInsertCodigoUsuario.setText("xxx");
 
-        jLabel2.setText("Data:");
+        jLabelData.setText("Data:");
 
         jLabelInsertData.setText("xx/xx/xxxx");
 
@@ -381,7 +387,7 @@ public class cronoFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelUsuario)
@@ -390,9 +396,9 @@ public class cronoFrame extends javax.swing.JFrame {
                 .addGap(2, 2, 2)
                 .addComponent(jLabelInsertUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
+                .addComponent(jLabelData)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelInsertData, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabelInsertData, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -403,13 +409,26 @@ public class cronoFrame extends javax.swing.JFrame {
                     .addComponent(jLabelUsuario)
                     .addComponent(jLabelInsertCodigoUsuario)
                     .addComponent(jLabelInsertUsuario)
-                    .addComponent(jLabel2)
+                    .addComponent(jLabelData)
                     .addComponent(jLabelInsertData)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+private void autenticarPaineis() {
+        this.baraMenuSuperior.setVisible(true);
+        if (this.usuario.getTipCol() == 2) {//tipo dois quer dizer que o usuario não é um gestor E não possui todas as permissoes
+            this.jMenuRelatorio.setVisible(false);
+            this.jMenuUsuario.setVisible(false);
+        }
+        jLabelInsertData.setText(ManipularData.obterData("dd-MM-yyyy"));
+        jLabelInsertUsuario.setText(this.usuario.getNomCol());
+        jLabelInsertCodigoUsuario.setText(this.usuario.getCodCol()+"");
 
+        jPanelPrincipal.add(jPanelPadrao, "padrao");
+        this.cl.show(jPanelPrincipal, "padrao");
+
+    }
     private void jMenuUsuarioCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuUsuarioCadastroActionPerformed
         PanelCadastroUsuario cadastroUsuario = new PanelCadastroUsuario();
         jPanelPrincipal.add(cadastroUsuario, "cadastroUsuario");
@@ -455,9 +474,41 @@ public class cronoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cpUsuarioActionPerformed
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        jPanelPrincipal.add(jPanelPadrao, "padrao");
-        this.cl.show(jPanelPrincipal, "padrao");
+        UsuarioDao col = new UsuarioDao();
+        GerenciaDeDados gd = new GerenciaDeDados();
 
+        try {
+            Usuario c = col.checar(cpUsuario.getText(), cpSenha.getText());
+
+            if (c == null) {
+                JOptionPane.showMessageDialog(null, "ERRO AO AUTENTICAR");
+
+            } else {
+
+                this.usuario = c;
+                ArrayList<Usuario> arrayUso = new ArrayList();
+                int codigo = this.usuario.getCodCol();
+                UsuarioDao colaborador = new UsuarioDao();
+
+                colaborador.SetarUltimoAcesso(codigo);
+
+                JOptionPane.showMessageDialog(null, "AUTENTICADO COM SUCESSO");
+
+                gd.criarPastaColaborador();
+                gd.salvarLog(this.usuario, false);
+                this.autenticarPaineis();
+                this.cl.show(jPanelPrincipal, "telaPadrao");
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(cronoFrame.class.getName()).log(Level.SEVERE, null, ex);
+
+            CardLayout cl = (CardLayout) jPanelPrincipal.getLayout();
+            cl.show(jPanelPrincipal, "telaPadrao");
+        }
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void cpSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpSenhaActionPerformed
@@ -552,7 +603,7 @@ public class cronoFrame extends javax.swing.JFrame {
 
     private void jMenuTomadaTempoIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuTomadaTempoIniciarMouseClicked
         try {
-            PanelTomadaDeTempo tomada = new PanelTomadaDeTempo(this.codigoUsuario);
+            PanelTomadaDeTempo tomada = new PanelTomadaDeTempo(this.usuario.getCodCol());
             jPanelPrincipal.add(tomada, "tomada");
             this.cl.show(jPanelPrincipal, "tomada");
         } catch (SQLException ex) {
@@ -564,7 +615,7 @@ public class cronoFrame extends javax.swing.JFrame {
 
     private void jMenuRelatorioGerarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuRelatorioGerarMouseClicked
         try {
-            PanelRelatorio relatorio = new PanelRelatorio(this.codigoUsuario);
+            PanelRelatorio relatorio = new PanelRelatorio(this.usuario.getCodCol());
             jPanelPrincipal.add(relatorio, "relatorio");
             this.cl.show(jPanelPrincipal, "relatorio");
         } catch (SQLException ex) {
@@ -616,7 +667,7 @@ public class cronoFrame extends javax.swing.JFrame {
     private javax.swing.JTextField cpUsuario;
     private javax.swing.JButton jButtonLogin;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelData;
     private javax.swing.JLabel jLabelInsertCodigoUsuario;
     private javax.swing.JLabel jLabelInsertData;
     private javax.swing.JLabel jLabelInsertUsuario;

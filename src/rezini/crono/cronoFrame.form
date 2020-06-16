@@ -207,7 +207,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanelPrincipal" max="32767" attributes="0"/>
+          <Component id="jPanelPrincipal" pref="900" max="32767" attributes="0"/>
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabelUsuario" min="-2" max="-2" attributes="0"/>
@@ -216,9 +216,9 @@
               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
               <Component id="jLabelInsertUsuario" min="-2" pref="160" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+              <Component id="jLabelData" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabelInsertData" min="-2" pref="58" max="-2" attributes="0"/>
+              <Component id="jLabelInsertData" min="-2" pref="86" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -231,7 +231,7 @@
                   <Component id="jLabelUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabelInsertCodigoUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabelInsertUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelData" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabelInsertData" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -450,7 +450,7 @@
         <Property name="text" type="java.lang.String" value="xxx"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="jLabelData">
       <Properties>
         <Property name="text" type="java.lang.String" value="Data:"/>
       </Properties>
